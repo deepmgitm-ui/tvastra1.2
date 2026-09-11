@@ -10,8 +10,8 @@
   assign seo_description_value = page_description | default: shop.description | default: shop.name
 
   if request.page_type == 'index'
-    assign seo_title_value = 'Tvastra Fit | Premium Gym Wear & Activewear India'
-    assign seo_description_value = 'Shop Tvastra Fit activewear online—premium gym wear, yoga tops, leggings and athleisure for men & women. Explore the latest styles and shop online today.'
+    assign seo_title_value = 'Tvastra Fit | Premium Activewear & Gym Wear for Men & Women'
+    assign seo_description_value = 'Shop premium activewear and gym wear for men & women at Tvastra Fit. Discover comfortable sportswear for workouts, training, yoga and everyday movement.'
   elsif request.page_type == 'page'
     case page.handle
       when 'about-us'
