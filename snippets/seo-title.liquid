@@ -4,23 +4,50 @@
 {%- if settings.favicon_ratina != blank -%}
   <link rel="apple-touch-icon" type="image/png" href="{{ settings.favicon_ratina | img_url: '152x' }}">
 {%- endif -%}
+
+{%- liquid
+  assign seo_title_value = page_title
+  assign seo_description_value = page_description | default: shop.description | default: shop.name
+
+  if request.page_type == 'index'
+    assign seo_title_value = 'Tvastra Fit | Premium Gym Wear & Activewear India'
+    assign seo_description_value = 'Shop Tvastra Fit activewear online—premium gym wear, yoga tops, leggings and athleisure for men & women. Explore the latest styles and shop online today.'
+  elsif request.page_type == 'page'
+    case page.handle
+      when 'about-us'
+        assign seo_title_value = 'About Tvastra Fit | Activewear Brand India'
+        assign seo_description_value = 'Learn about Tvastra Fit, a modern activewear brand for gym, yoga, training and everyday athleisure. Discover our approach to fit and style.'
+      when 'contact'
+        assign seo_title_value = 'Contact Tvastra Fit | Get in Touch'
+        assign seo_description_value = 'Have a question about Tvastra Fit products, orders or support? Contact our team and we will help you with your query.'
+      when 'wishlist'
+        assign seo_title_value = 'Wishlist | Tvastra Fit'
+        assign seo_description_value = 'Save your favourite Tvastra Fit activewear styles and come back to them whenever you are ready to shop.'
+      when 'kp-account'
+        assign seo_title_value = 'Account | Tvastra Fit'
+        assign seo_description_value = 'Manage your Tvastra Fit account and access your customer information.'
+    endcase
+  elsif request.page_type == 'blog' and blog.articles_count == 0
+    assign seo_title_value = 'Tvastra Fit Journal | Activewear & Fitness'
+    assign seo_description_value = 'Tvastra Fit journal for activewear, training, gym, yoga and everyday athleisure tips.'
+  endif
+-%}
+
 {%- capture seo_title -%}
-  {%- if current_page != 1 -%}
-   {{ page_title }} &ndash; {{ current_page }}
-  {%- endif -%}
-  {%- if current_tags -%}
-    Tagged: {%- assign meta_tags = current_tags | join: ', ' -%} {{ meta_tags -}}&ndash;
-  {%- endif -%}
   {%- if request.page_type == 'search' and search.performed == true -%}
     {{ 'templates.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
   {%- elsif request.page_type == 'password' -%}
     {{ shop.name }} &ndash; {{ 'general.password_page.password_page_title' | t }}
   {%- else -%}
-    {{ page_title }}
+    {{ seo_title_value }}
+    {%- if current_page != 1 and request.page_type != 'index' -%}
+      &ndash; {{ current_page }}
+    {%- endif -%}
+  {%- endif -%}
+  {%- if current_tags -%}
+    Tagged: {%- assign meta_tags = current_tags | join: ', ' -%} {{ meta_tags -}}&ndash;
   {%- endif -%}
 {%- endcapture -%}
-<title>{{ seo_title }}</title>
-{%- liquid
-  assign seo_description = page_description | default: shop.description | default: shop.name
--%}
-<meta name="description" content="{{ seo_description | strip_html | escape }}">
+
+<title>{{ seo_title | strip_html | escape }}</title>
+<meta name="description" content="{{ seo_description_value | strip_html | escape }}">
