@@ -3,6 +3,30 @@
   assign og_url = canonical_url | default: shop.url
   assign og_type = 'website'
   assign og_description = page_description | default: shop.description | default: shop.name
+
+  if request.page_type == 'index'
+    assign og_title = 'Tvastra Fit | Premium Gym Wear & Activewear India'
+    assign og_description = 'Shop Tvastra Fit activewear online—premium gym wear, yoga tops, leggings and athleisure for men & women. Explore the latest styles and shop online today.'
+  elsif request.page_type == 'page'
+    case page.handle
+      when 'about-us'
+        assign og_title = 'About Tvastra Fit | Activewear Brand India'
+        assign og_description = 'Learn about Tvastra Fit, a modern activewear brand for gym, yoga, training and everyday athleisure. Discover our approach to fit and style.'
+      when 'contact'
+        assign og_title = 'Contact Tvastra Fit | Get in Touch'
+        assign og_description = 'Have a question about Tvastra Fit products, orders or support? Contact our team and we will help you with your query.'
+      when 'wishlist'
+        assign og_title = 'Wishlist | Tvastra Fit'
+        assign og_description = 'Save your favourite Tvastra Fit activewear styles and come back to them whenever you are ready to shop.'
+      when 'kp-account'
+        assign og_title = 'Account | Tvastra Fit'
+        assign og_description = 'Manage your Tvastra Fit account and access your customer information.'
+    endcase
+  elsif request.page_type == 'blog' and blog.articles_count == 0
+    assign og_title = 'Tvastra Fit Journal | Activewear & Fitness'
+    assign og_description = 'Tvastra Fit journal for activewear, training, gym, yoga and everyday athleisure tips.'
+  endif
+
   assign og_image = page_image
   if og_image == blank and request.page_type == 'product'
     assign og_image = product.featured_image
@@ -14,6 +38,7 @@
   if og_image != blank
     assign og_image_url = og_image | image_url: width: 1200 | prepend: 'https:'
   endif
+
   if request.page_type == 'product'
     assign og_type = 'product'
   elsif request.page_type == 'article'
@@ -23,7 +48,23 @@
   elsif request.page_type == 'password'
     assign og_url = shop.url
   endif
+
+  assign should_noindex = false
+  if request.page_type == 'search'
+    assign should_noindex = true
+  elsif request.page_type == 'cart'
+    assign should_noindex = true
+  elsif request.page_type == 'password'
+    assign should_noindex = true
+  elsif request.page_type == 'page' and page.handle == 'wishlist'
+    assign should_noindex = true
+  elsif request.page_type == 'page' and page.handle == 'kp-account'
+    assign should_noindex = true
+  elsif request.page_type == 'blog' and blog.articles_count == 0
+    assign should_noindex = true
+  endif
 -%}
+
 <meta property="og:site_name" content="{{ shop.name | escape }}">
 <meta property="og:url" content="{{ og_url | escape }}">
 <meta property="og:title" content="{{ og_title | escape }}">
@@ -50,4 +91,99 @@
 {%- if og_image_url != blank -%}
   <meta name="twitter:image" content="{{ og_image_url }}">
   <meta name="twitter:image:alt" content="{{ og_title | escape }}">
+{%- endif -%}
+{%- if should_noindex -%}
+  <meta name="robots" content="noindex,follow">
+{%- endif -%}
+
+{%- if request.page_type == 'product' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ shop.url | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ product.title | json }},
+        "item": {{ canonical_url | json }}
+      }
+    ]
+  }
+  </script>
+{%- elsif request.page_type == 'collection' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ shop.url | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ collection.title | json }},
+        "item": {{ canonical_url | json }}
+      }
+    ]
+  }
+  </script>
+{%- elsif request.page_type == 'article' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ shop.url | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ blog.title | json }},
+        "item": {{ blog.url | prepend: shop.url | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": {{ article.title | json }},
+        "item": {{ canonical_url | json }}
+      }
+    ]
+  }
+  </script>
+{%- elsif request.page_type == 'page' and page.handle != 'kp-account' and page.handle != 'wishlist' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ shop.url | json }}
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ page.title | json }},
+        "item": {{ canonical_url | json }}
+      }
+    ]
+  }
+  </script>
 {%- endif -%}
