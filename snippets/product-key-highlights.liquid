@@ -28,10 +28,10 @@
       inset: 0;
       overflow: hidden;
       border-radius: 12px 0 0 12px;
-      background: linear-gradient(90deg, rgba(24,24,24,.82) 0%, rgba(24,24,24,.74) 100%);
+      background: linear-gradient(90deg, rgba(24,24,24,.84) 0%, rgba(24,24,24,.74) 100%);
       box-shadow: -12px 0 32px rgba(0,0,0,.12);
       transform: translateX(calc(100% - var(--tvastra-kh-handle)));
-      transition: transform .58s cubic-bezier(.22,.74,.2,1), box-shadow .58s ease;
+      transition: transform .62s cubic-bezier(.22,.76,.16,1), box-shadow .62s ease;
       pointer-events: none;
       will-change: transform;
     }
@@ -50,21 +50,22 @@
     .tvastra-key-highlights__title,
     .tvastra-key-highlights__item {
       opacity: 0;
-      transform: translateX(22px);
+      transform: translateX(28px);
+    }
+    .tvastra-key-highlights__title {
+      margin: 0 0 clamp(22px, 4vw, 32px);
+      color: #fff !important;
+      font-size: clamp(26px, 3vw, 42px);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      text-transform: none;
     }
     .tvastra-key-highlights.is-open .tvastra-key-highlights__title {
       animation: tvastraHighlightsTextIn .5s cubic-bezier(.2,.75,.2,1) .08s forwards;
     }
     .tvastra-key-highlights.is-open .tvastra-key-highlights__item {
       animation: tvastraHighlightsTextIn .48s cubic-bezier(.2,.75,.2,1) calc(.18s + var(--tvastra-highlight-delay, 0s)) forwards;
-    }
-    .tvastra-key-highlights__title {
-      margin: 0 0 clamp(22px, 4vw, 32px);
-      font-size: clamp(26px, 3vw, 42px);
-      font-weight: 700;
-      line-height: 1.02;
-      letter-spacing: -.03em;
-      text-transform: none;
     }
     .tvastra-key-highlights__item {
       padding: 0 0 14px;
@@ -74,14 +75,14 @@
     .tvastra-key-highlights__label {
       display: block;
       margin: 0 0 4px;
-      color: rgba(255,255,255,.70);
+      color: rgba(255,255,255,.74) !important;
       font-size: clamp(11px, 1.05vw, 14px);
       font-weight: 400;
       line-height: 1.25;
     }
     .tvastra-key-highlights__value {
       display: block;
-      color: #fff;
+      color: #fff !important;
       font-size: clamp(15px, 1.5vw, 21px);
       font-weight: 700;
       line-height: 1.22;
@@ -115,7 +116,7 @@
       width: 18px;
       height: 18px;
       display: block;
-      transition: transform .45s cubic-bezier(.22,.74,.2,1);
+      transition: transform .48s cubic-bezier(.22,.76,.16,1);
     }
     .tvastra-key-highlights__toggle[aria-expanded='true'] .tvastra-key-highlights__chevron {
       transform: rotate(180deg);
@@ -129,7 +130,7 @@
     @media (max-width: 767px) {
       .tvastra-key-highlights {
         --tvastra-kh-handle: 40px;
-        --tvastra-kh-width: 50%;
+        --tvastra-kh-width: 52%;
         min-width: 0;
       }
       .tvastra-key-highlights__panel {
@@ -210,7 +211,7 @@
         aria-label="Show key highlights"
       >
         <svg class="tvastra-key-highlights__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M8 4.5 15.5 12 8 19.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.5 4.5 8 12l7.5 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
     </div>
@@ -223,9 +224,8 @@
           if (highlights.dataset.tvastraBound === 'true') return;
           highlights.dataset.tvastraBound = 'true';
 
-          var slide = highlights.closest('.product__media-item');
           var toggle = highlights.querySelector('.tvastra-key-highlights__toggle');
-          if (!slide || !toggle) return;
+          if (!toggle) return;
 
           function setOpen(open) {
             highlights.classList.toggle('is-open', open);
@@ -241,12 +241,6 @@
             event.stopPropagation();
             setOpen(highlights.dataset.tvastraOpen !== 'true');
           });
-
-          if (window.MutationObserver) {
-            new MutationObserver(function () {
-              if (!slide.classList.contains('swiper-slide-active')) setOpen(false);
-            }).observe(slide, { attributes: true, attributeFilter: ['class'] });
-          }
         });
       }
 
