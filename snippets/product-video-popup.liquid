@@ -21,15 +21,20 @@
 {%- if tvastra_video_markup contains '<video' -%}
   <style>
     .tvastra-video-float { display: none !important; }
-    .tvastra-product-video-float { position: fixed; right: 16px; bottom: 20px; z-index: 2147483000; width: 118px; max-width: calc(100vw - 32px); }
-    .tvastra-product-video-float__trigger { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #111; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,.22); transform: translateZ(0); transition: transform .22s ease, box-shadow .22s ease; -webkit-tap-highlight-color: transparent; }
+    .tvastra-product-video-float { position: fixed; right: 16px; bottom: 20px; z-index: 2147483000; width: 118px; max-width: calc(100vw - 32px); touch-action: none; user-select: none; -webkit-user-select: none; }
+    .tvastra-product-video-float.is-dragging { cursor: grabbing; }
+    .tvastra-product-video-float[hidden] { display: none !important; }
+    .tvastra-product-video-float__trigger { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #111; cursor: grab; box-shadow: 0 10px 30px rgba(0,0,0,.22); transform: translateZ(0); transition: transform .22s ease, box-shadow .22s ease; -webkit-tap-highlight-color: transparent; touch-action: none; }
     .tvastra-product-video-float__trigger:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.26); }
-    .tvastra-product-video-float__preview, .tvastra-product-video-float__preview video { display: block; width: 100%; aspect-ratio: 3/4; }
+    .tvastra-product-video-float.is-dragging .tvastra-product-video-float__trigger { cursor: grabbing; }
+    .tvastra-product-video-float__preview, .tvastra-product-video-float__preview video { display: block; width: 100%; aspect-ratio: 3/4; pointer-events: none; }
     .tvastra-product-video-float__preview video { height: auto; object-fit: cover; background: #111; }
     .tvastra-product-video-float__trigger::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,.58), rgba(0,0,0,0) 52%); }
-    .tvastra-product-video-float__play { position: absolute; z-index: 2; top: 50%; left: 50%; display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; background: rgba(255,255,255,.92); box-shadow: 0 4px 14px rgba(0,0,0,.18); transform: translate(-50%,-50%); }
+    .tvastra-product-video-float__play { position: absolute; z-index: 2; top: 50%; left: 50%; display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; background: rgba(255,255,255,.92); box-shadow: 0 4px 14px rgba(0,0,0,.18); transform: translate(-50%,-50%); pointer-events: none; }
     .tvastra-product-video-float__play svg { width: 17px; height: 17px; margin-left: 2px; fill: #111; }
     .tvastra-product-video-float__label { position: absolute; z-index: 2; right: 8px; bottom: 7px; left: 8px; overflow: hidden; color: #fff; font-size: 11px; font-weight: 600; line-height: 1.2; text-align: center; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
+    .tvastra-product-video-float__close { position: absolute; z-index: 5; top: -7px; right: -7px; display: grid; width: 28px; height: 28px; padding: 0; place-items: center; border: 1px solid rgba(255,255,255,.8); border-radius: 50%; background: rgba(17,17,17,.95); color: #fff; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.28); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    .tvastra-product-video-float__close svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 2.2; }
     .tvastra-product-video-modal { position: fixed; inset: 0; z-index: 2147483001; display: grid; place-items: center; padding: 20px; }
     .tvastra-product-video-modal[hidden] { display: none; }
     .tvastra-product-video-modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.84); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); animation: tvastraProductVideoFadeIn .2s ease; }
@@ -47,6 +52,8 @@
       .tvastra-product-video-float__play { width: 34px; height: 34px; }
       .tvastra-product-video-float__play svg { width: 15px; height: 15px; }
       .tvastra-product-video-float__label { font-size: 10px; }
+      .tvastra-product-video-float__close { top: -6px; right: -6px; width: 26px; height: 26px; }
+      .tvastra-product-video-float__close svg { width: 14px; height: 14px; }
       .tvastra-product-video-modal { padding: 12px; }
       .tvastra-product-video-modal__dialog { width: min(96vw,560px); max-height: 96vh; }
       .tvastra-product-video-modal__video-wrap, .tvastra-product-video-modal__video-wrap video { max-height: 96vh; }
@@ -56,6 +63,7 @@
   </style>
 
   <div class="tvastra-product-video-float" data-tvastra-product-video>
+    <button class="tvastra-product-video-float__close" type="button" aria-label="Close floating product video" data-tvastra-product-video-dismiss><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
     <button class="tvastra-product-video-float__trigger" type="button" aria-label="Open product video" aria-haspopup="dialog" aria-controls="TvastraProductVideoModal-{{ section.id }}">
       <span class="tvastra-product-video-float__preview">{{ tvastra_video_markup }}</span>
       <span class="tvastra-product-video-float__play" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"></path></svg></span>
@@ -78,11 +86,13 @@
       root.dataset.tvastraProductVideoBound = 'true';
 
       var trigger = root.querySelector('.tvastra-product-video-float__trigger');
+      var dismiss = root.querySelector('[data-tvastra-product-video-dismiss]');
       var modal = root.querySelector('[data-tvastra-product-video-modal]');
       var previewVideo = root.querySelector('.tvastra-product-video-float__preview video');
       var modalVideo = modal ? modal.querySelector('.tvastra-product-video-modal__video-wrap video') : null;
       var closeButtons = root.querySelectorAll('[data-tvastra-product-video-close]');
       var lastFocused = null;
+      var drag = { active: false, moved: false, pointerId: null, startX: 0, startY: 0, originX: 0, originY: 0 };
 
       function safePlay(video) {
         if (!video) return;
@@ -96,7 +106,7 @@
         safePlay(previewVideo);
       }
       function openModal() {
-        if (!modal) return;
+        if (!modal || drag.moved) return;
         lastFocused = document.activeElement; modal.hidden = false;
         document.documentElement.classList.add('tvastra-product-video-lock'); document.body.classList.add('tvastra-product-video-lock');
         safePause(previewVideo);
@@ -111,11 +121,68 @@
         preparePreview();
         if (lastFocused && typeof lastFocused.focus === 'function') { try { lastFocused.focus({preventScroll:true}); } catch (error) { lastFocused.focus(); } }
       }
+      function dismissFloat(event) {
+        if (event) event.stopPropagation();
+        closeModal();
+        safePause(previewVideo);
+        root.hidden = true;
+      }
+      function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
+      function startDrag(event) {
+        if (event.button !== undefined && event.button !== 0 && event.pointerType !== 'touch') return;
+        if (event.target && dismiss && (event.target === dismiss || dismiss.contains(event.target))) return;
+        var rect = root.getBoundingClientRect();
+        drag.active = true;
+        drag.moved = false;
+        drag.pointerId = event.pointerId;
+        drag.startX = event.clientX;
+        drag.startY = event.clientY;
+        drag.originX = rect.left;
+        drag.originY = rect.top;
+        root.classList.add('is-dragging');
+        root.style.right = 'auto';
+        root.style.bottom = 'auto';
+        root.style.left = drag.originX + 'px';
+        root.style.top = drag.originY + 'px';
+        if (root.setPointerCapture && event.pointerId !== undefined) {
+          try { root.setPointerCapture(event.pointerId); } catch (error) {}
+        }
+      }
+      function moveDrag(event) {
+        if (!drag.active || (drag.pointerId !== null && event.pointerId !== drag.pointerId)) return;
+        var dx = event.clientX - drag.startX;
+        var dy = event.clientY - drag.startY;
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) drag.moved = true;
+        if (!drag.moved) return;
+        var maxX = Math.max(0, window.innerWidth - root.offsetWidth - 6);
+        var maxY = Math.max(0, window.innerHeight - root.offsetHeight - 6);
+        root.style.left = clamp(drag.originX + dx, 6, maxX) + 'px';
+        root.style.top = clamp(drag.originY + dy, 6, maxY) + 'px';
+        if (event.cancelable) event.preventDefault();
+      }
+      function endDrag(event) {
+        if (!drag.active || (drag.pointerId !== null && event.pointerId !== drag.pointerId)) return;
+        if (root.releasePointerCapture && drag.pointerId !== null) {
+          try { root.releasePointerCapture(drag.pointerId); } catch (error) {}
+        }
+        root.classList.remove('is-dragging');
+        drag.active = false;
+        drag.pointerId = null;
+        window.setTimeout(function () { drag.moved = false; }, 0);
+      }
+
       preparePreview();
-      if (trigger) trigger.addEventListener('click', openModal);
+      if (dismiss) dismiss.addEventListener('click', dismissFloat);
+      if (trigger) {
+        trigger.addEventListener('pointerdown', startDrag);
+        trigger.addEventListener('pointermove', moveDrag);
+        trigger.addEventListener('pointerup', endDrag);
+        trigger.addEventListener('pointercancel', endDrag);
+        trigger.addEventListener('click', function (event) { if (drag.moved) { event.preventDefault(); event.stopPropagation(); return; } openModal(); });
+      }
       closeButtons.forEach(function (button) { button.addEventListener('click', closeModal); });
       document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && modal && !modal.hidden) closeModal(); });
-      document.addEventListener('visibilitychange', function () { if (document.hidden) { safePause(previewVideo); safePause(modalVideo); } else if (modal && modal.hidden) preparePreview(); });
+      document.addEventListener('visibilitychange', function () { if (document.hidden) { safePause(previewVideo); safePause(modalVideo); } else if (modal && modal.hidden && !root.hidden) preparePreview(); });
     })();
   </script>
 {%- endif -%}
