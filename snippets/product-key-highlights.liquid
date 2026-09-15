@@ -23,6 +23,10 @@
       pointer-events: none;
       color: #fff;
       overflow: visible;
+      transition: opacity .2s ease;
+    }
+    .tvastra-key-highlights.is-hidden {
+      display: none;
     }
     .tvastra-key-highlights__panel {
       position: absolute;
@@ -175,7 +179,7 @@
     }
   </style>
 
-  <div class="tvastra-key-highlights" data-tvastra-open="false" aria-label="Key Highlights">
+  <div class="tvastra-key-highlights" data-tvastra-open="true" data-tvastra-bound="false" aria-label="Key Highlights">
     <div class="tvastra-key-highlights__panel">
       <div class="tvastra-key-highlights__content">
         <h2 class="tvastra-key-highlights__title">{{ tvastra_highlights_title | escape }}</h2>
@@ -215,8 +219,8 @@
     <button
       type="button"
       class="tvastra-key-highlights__toggle"
-      aria-expanded="false"
-      aria-label="Show key highlights"
+      aria-expanded="true"
+      aria-label="Hide key highlights"
     >
       <svg class="tvastra-key-highlights__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M15.5 4.5 8 12l7.5 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -226,43 +230,29 @@
 
   <script>
     (function () {
-      var galleryGuardScheduled = false;
+      function isSourceSlide(highlights, swiper) {
+        if (!swiper || !swiper.slides) return true;
+        var hostSlide = highlights.closest('.swiper-slide');
+        if (!hostSlide) return true;
+        var activeSlide = swiper.slides[swiper.activeIndex];
+        return activeSlide === hostSlide;
+      }
 
-      function disableProductGalleryLoop() {
-        document.querySelectorAll('.product-image-main').forEach(function (gallery) {
-          if (!gallery.querySelector('.tvastra-key-highlights')) return;
-
-          try {
-            var swiper = gallery.swiper;
-
-            if (swiper && swiper.params && swiper.params.loop) {
-              swiper.params.loop = false;
-              if (swiper.originalParams) swiper.originalParams.loop = false;
-              if (typeof swiper.loopDestroy === 'function') swiper.loopDestroy();
-              if (typeof swiper.update === 'function') swiper.update();
-            }
-
-            gallery.querySelectorAll('.swiper-slide-duplicate').forEach(function (slide) {
-              slide.remove();
-            });
-          } catch (error) {}
+      function syncHighlightsToSlide() {
+        document.querySelectorAll('.tvastra-key-highlights').forEach(function (highlights) {
+          var gallery = highlights.closest('.product-image-main');
+          var swiper = gallery && gallery.swiper;
+          var visibleOnFirstImage = isSourceSlide(highlights, swiper);
+          highlights.classList.toggle('is-hidden', !visibleOnFirstImage);
         });
       }
 
-      function scheduleGalleryGuard() {
-        if (galleryGuardScheduled) return;
-        galleryGuardScheduled = true;
-
-        var run = function () {
-          galleryGuardScheduled = false;
-          disableProductGalleryLoop();
-        };
-
-        if (window.requestAnimationFrame) {
-          window.requestAnimationFrame(run);
-        } else {
-          window.setTimeout(run, 0);
-        }
+      function bindGallery(swiper) {
+        if (!swiper || swiper.__tvastraHighlightsBound) return;
+        swiper.__tvastraHighlightsBound = true;
+        swiper.on('slideChange', syncHighlightsToSlide);
+        swiper.on('transitionEnd', syncHighlightsToSlide);
+        swiper.on('update', syncHighlightsToSlide);
       }
 
       function setupHighlights() {
@@ -280,7 +270,7 @@
             toggle.setAttribute('aria-label', open ? 'Hide key highlights' : 'Show key highlights');
           }
 
-          setOpen(false);
+          setOpen(true);
 
           toggle.addEventListener('click', function (event) {
             event.preventDefault();
@@ -289,7 +279,11 @@
           });
         });
 
-        disableProductGalleryLoop();
+        document.querySelectorAll('.product-image-main').forEach(function (gallery) {
+          if (gallery.swiper) bindGallery(gallery.swiper);
+        });
+
+        syncHighlightsToSlide();
       }
 
       if (document.readyState === 'loading') {
@@ -300,18 +294,13 @@
 
       window.addEventListener('load', setupHighlights);
 
-      [50, 150, 300, 700, 1500, 3000].forEach(function (delay) {
-        window.setTimeout(disableProductGalleryLoop, delay);
-      });
-
       if (window.MutationObserver) {
-        var observerTarget = document.body || document.documentElement;
-        if (observerTarget) {
-          new MutationObserver(scheduleGalleryGuard).observe(observerTarget, {
-            childList: true,
-            subtree: true
-          });
-        }
+        new MutationObserver(function () {
+          setupHighlights();
+        }).observe(document.body || document.documentElement, {
+          childList: true,
+          subtree: true
+        });
       }
     })();
   </script>
