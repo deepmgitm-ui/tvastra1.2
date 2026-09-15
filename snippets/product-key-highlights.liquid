@@ -31,7 +31,7 @@
       border-radius: 12px 0 0 12px;
       background: linear-gradient(90deg, rgba(24,24,24,.84) 0%, rgba(24,24,24,.74) 100%);
       box-shadow: -12px 0 32px rgba(0,0,0,.12);
-      transform: translateX(calc(100% - var(--tvastra-kh-handle)));
+      transform: translateX(100%);
       transition: transform .62s cubic-bezier(.22,.76,.16,1), box-shadow .62s ease;
       pointer-events: none;
       will-change: transform;
@@ -91,7 +91,8 @@
     .tvastra-key-highlights__toggle {
       position: absolute;
       top: 50%;
-      left: 0;
+      right: 0;
+      left: auto;
       width: var(--tvastra-kh-handle);
       height: 74px;
       padding: 0;
@@ -101,15 +102,16 @@
       color: #fff;
       display: grid;
       place-items: center;
-      transform: translate(calc(100% - var(--tvastra-kh-handle)), -50%);
+      transform: translateY(-50%);
       cursor: pointer;
       pointer-events: auto;
+      z-index: 10;
       box-shadow: -8px 0 22px rgba(0,0,0,.12);
-      transition: transform .62s cubic-bezier(.22,.76,.16,1), background .25s ease, box-shadow .25s ease;
+      transition: right .62s cubic-bezier(.22,.76,.16,1), background .25s ease, box-shadow .25s ease;
       -webkit-tap-highlight-color: transparent;
     }
     .tvastra-key-highlights.is-open .tvastra-key-highlights__toggle {
-      transform: translate(0, -50%);
+      right: calc(100% - var(--tvastra-kh-handle));
     }
     .tvastra-key-highlights__toggle:hover,
     .tvastra-key-highlights__toggle:focus-visible {
@@ -209,21 +211,60 @@
           {%- endfor -%}
         {%- endif -%}
       </div>
-      <button
-        type="button"
-        class="tvastra-key-highlights__toggle"
-        aria-expanded="false"
-        aria-label="Show key highlights"
-      >
-        <svg class="tvastra-key-highlights__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M15.5 4.5 8 12l7.5 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
     </div>
+    <button
+      type="button"
+      class="tvastra-key-highlights__toggle"
+      aria-expanded="false"
+      aria-label="Show key highlights"
+    >
+      <svg class="tvastra-key-highlights__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15.5 4.5 8 12l7.5 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
   </div>
 
   <script>
     (function () {
+      var galleryGuardScheduled = false;
+
+      function disableProductGalleryLoop() {
+        document.querySelectorAll('.product-image-main').forEach(function (gallery) {
+          if (!gallery.querySelector('.tvastra-key-highlights')) return;
+
+          try {
+            var swiper = gallery.swiper;
+
+            if (swiper && swiper.params && swiper.params.loop) {
+              swiper.params.loop = false;
+              if (swiper.originalParams) swiper.originalParams.loop = false;
+              if (typeof swiper.loopDestroy === 'function') swiper.loopDestroy();
+              if (typeof swiper.update === 'function') swiper.update();
+            }
+
+            gallery.querySelectorAll('.swiper-slide-duplicate').forEach(function (slide) {
+              slide.remove();
+            });
+          } catch (error) {}
+        });
+      }
+
+      function scheduleGalleryGuard() {
+        if (galleryGuardScheduled) return;
+        galleryGuardScheduled = true;
+
+        var run = function () {
+          galleryGuardScheduled = false;
+          disableProductGalleryLoop();
+        };
+
+        if (window.requestAnimationFrame) {
+          window.requestAnimationFrame(run);
+        } else {
+          window.setTimeout(run, 0);
+        }
+      }
+
       function setupHighlights() {
         document.querySelectorAll('.tvastra-key-highlights').forEach(function (highlights) {
           if (highlights.dataset.tvastraBound === 'true') return;
@@ -247,6 +288,8 @@
             setOpen(highlights.dataset.tvastraOpen !== 'true');
           });
         });
+
+        disableProductGalleryLoop();
       }
 
       if (document.readyState === 'loading') {
@@ -256,6 +299,20 @@
       }
 
       window.addEventListener('load', setupHighlights);
+
+      [50, 150, 300, 700, 1500, 3000].forEach(function (delay) {
+        window.setTimeout(disableProductGalleryLoop, delay);
+      });
+
+      if (window.MutationObserver) {
+        var observerTarget = document.body || document.documentElement;
+        if (observerTarget) {
+          new MutationObserver(scheduleGalleryGuard).observe(observerTarget, {
+            childList: true,
+            subtree: true
+          });
+        }
+      }
     })();
   </script>
 {%- endif -%}
