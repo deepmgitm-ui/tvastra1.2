@@ -97,7 +97,7 @@
   >
     <span class="bi bi-arrows-fullscreen"></span>
   </a>
-  <div class="badge-wrapper" id="badge-{{ section.id }}">
+  <div class="badge-wrapper" id="badge-{{ section_id }}">
     {%- render 'product-badge', product_for_badge: product -%}
   </div>
   {%- capture slider_thumb_options -%}  
@@ -153,7 +153,7 @@
     <!-- Additional required wrapper -->
     <div class="swiper-wrapper">
       <!-- Slides -->
-      {%- assign tvastra_highlights_rendered = false -%}
+      {%- assign tvastra_first_image = blank -%}
       {%- for media in product.media -%}
         {%- liquid
           assign can_show = false
@@ -184,11 +184,10 @@
               loop: section_settings.enable_video_looping,
               modal_id: section_id
             -%}
-            {%- unless tvastra_highlights_rendered -%}
-              {%- render 'product-key-highlights' -%}
-              {%- assign tvastra_highlights_rendered = true -%}
-            {%- endunless -%}
           </div>
+          {%- if tvastra_first_image == blank and media.media_type == 'image' -%}
+            {%- assign tvastra_first_image = media -%}
+          {%- endif -%}
         {%- endif -%}
       {%- endfor -%}
       {%- unless image_shown -%}
@@ -208,12 +207,32 @@
               loop: section_settings.enable_video_looping,
               modal_id: section_id
             -%}
-            {%- if forloop.first -%}
-              {%- render 'product-key-highlights' -%}
-            {%- endif -%}
           </div>
+          {%- if tvastra_first_image == blank and media.media_type == 'image' -%}
+            {%- assign tvastra_first_image = media -%}
+          {%- endif -%}
         {%- endfor -%}
       {%- endunless -%}
+
+      {%- if tvastra_first_image != blank and product.metafields.custom.key_highlights != blank and product.metafields.custom.key_highlights.value != blank -%}
+        <div
+          class="swiper-slide product__media-item tvastra-key-highlights-slide"
+          data-media-type="image"
+          data-media-host=""
+          data-media-id="{{ section_id }}-{{ tvastra_first_image.id }}-key-highlights-main"
+          data-index="highlights"
+          variant_img_added="false"
+        >
+          {%- render 'product-thumbnail',
+            type: 'main',
+            media: tvastra_first_image,
+            position: 1,
+            loop: false,
+            modal_id: section_id
+          -%}
+          {%- render 'product-key-highlights' -%}
+        </div>
+      {%- endif -%}
     </div>
     <div class="swiper-button-prev">
       <svg xmlns="http://www.w3.org/2000/svg" fill="#262626" viewBox="0 0 320 512">
@@ -222,7 +241,7 @@
     </div>
     <div class="swiper-button-next">
       <svg xmlns="http://www.w3.org/2000/svg" fill="#262626" viewBox="0 0 320 512">
-        <path d="M278.6 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/>
+        <path d="M278.6 233.4c-12.5 12.5 12.5 12.5 45.3 0 45.3s-12.5 32.8-32.8 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-32.8-12.5 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/>
       </svg>
       </div>
   </div>
