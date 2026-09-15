@@ -7,87 +7,157 @@
 
 {%- if tvastra_highlights_field != blank and tvastra_highlights_items != blank -%}
   <style>
-    .tvastra-key-highlights-slide {
+    .tvastra-key-highlights-host {
       position: relative;
-      overflow: hidden;
     }
     .tvastra-key-highlights {
+      --tvastra-kh-handle: 42px;
+      --tvastra-kh-width: 38%;
       position: absolute;
-      z-index: 4;
-      inset: 0;
-      display: flex;
-      align-items: flex-start;
-      padding: clamp(24px, 5vw, 58px) clamp(20px, 5vw, 54px);
+      z-index: 8;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: var(--tvastra-kh-width);
+      min-width: 250px;
       pointer-events: none;
-      overflow: hidden;
-      border-radius: inherit;
-      background: linear-gradient(90deg, rgba(10,10,10,.76) 0%, rgba(10,10,10,.52) 30%, rgba(10,10,10,.12) 60%, rgba(10,10,10,0) 80%);
       color: #fff;
     }
-    .tvastra-key-highlights__inner {
-      width: min(43%, 390px);
-      max-width: 100%;
+    .tvastra-key-highlights__panel {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: 12px 0 0 12px;
+      background: linear-gradient(90deg, rgba(24,24,24,.82) 0%, rgba(24,24,24,.74) 100%);
+      box-shadow: -12px 0 32px rgba(0,0,0,.12);
+      transform: translateX(calc(100% - var(--tvastra-kh-handle)));
+      transition: transform .58s cubic-bezier(.22,.74,.2,1), box-shadow .58s ease;
+      pointer-events: none;
+      will-change: transform;
+    }
+    .tvastra-key-highlights.is-open .tvastra-key-highlights__panel {
+      transform: translateX(0);
+      box-shadow: -18px 0 40px rgba(0,0,0,.18);
+    }
+    .tvastra-key-highlights__content {
+      height: 100%;
+      box-sizing: border-box;
+      padding: clamp(28px, 6vw, 58px) clamp(22px, 4vw, 38px);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .tvastra-key-highlights__content::-webkit-scrollbar { display: none; }
+    .tvastra-key-highlights__title,
+    .tvastra-key-highlights__item {
+      opacity: 0;
+      transform: translateX(22px);
+    }
+    .tvastra-key-highlights.is-open .tvastra-key-highlights__title {
+      animation: tvastraHighlightsTextIn .5s cubic-bezier(.2,.75,.2,1) .08s forwards;
+    }
+    .tvastra-key-highlights.is-open .tvastra-key-highlights__item {
+      animation: tvastraHighlightsTextIn .48s cubic-bezier(.2,.75,.2,1) calc(.18s + var(--tvastra-highlight-delay, 0s)) forwards;
     }
     .tvastra-key-highlights__title {
-      margin: 0 0 clamp(22px, 4vw, 34px);
-      font-size: clamp(30px, 3.2vw, 46px);
+      margin: 0 0 clamp(22px, 4vw, 32px);
+      font-size: clamp(26px, 3vw, 42px);
       font-weight: 700;
-      line-height: 1.04;
+      line-height: 1.02;
       letter-spacing: -.03em;
       text-transform: none;
-      opacity: 0;
-      transform: translateX(-34px);
-    }
-    .tvastra-key-highlights--visible .tvastra-key-highlights__title {
-      animation: tvastraHighlightsTitle .65s cubic-bezier(.2,.75,.2,1) .08s forwards;
     }
     .tvastra-key-highlights__item {
-      padding: 0 0 13px;
-      margin: 0 0 13px;
-      border-bottom: 1px solid rgba(255,255,255,.34);
-      opacity: 0;
-      transform: translateX(-34px);
-    }
-    .tvastra-key-highlights--visible .tvastra-key-highlights__item {
-      animation: tvastraHighlightsItem .58s cubic-bezier(.2,.75,.2,1) calc(.22s + var(--tvastra-highlight-delay, 0s)) forwards;
+      padding: 0 0 14px;
+      margin: 0 0 14px;
+      border-bottom: 1px solid rgba(255,255,255,.26);
     }
     .tvastra-key-highlights__label {
       display: block;
-      margin: 0 0 3px;
-      color: rgba(255,255,255,.72);
-      font-size: clamp(11px, 1.1vw, 15px);
+      margin: 0 0 4px;
+      color: rgba(255,255,255,.70);
+      font-size: clamp(11px, 1.05vw, 14px);
       font-weight: 400;
       line-height: 1.25;
     }
     .tvastra-key-highlights__value {
       display: block;
       color: #fff;
-      font-size: clamp(15px, 1.55vw, 22px);
+      font-size: clamp(15px, 1.5vw, 21px);
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.22;
     }
-    @keyframes tvastraHighlightsTitle {
-      to { opacity: 1; transform: translateX(0); }
+    .tvastra-key-highlights__toggle {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: var(--tvastra-kh-handle);
+      height: 74px;
+      padding: 0;
+      border: 0;
+      border-radius: 14px 0 0 14px;
+      background: rgba(75,75,75,.72);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      transform: translateY(-50%);
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: -8px 0 22px rgba(0,0,0,.10);
+      transition: background .25s ease, width .25s ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    @keyframes tvastraHighlightsItem {
-      to { opacity: 1; transform: translateX(0); }
+    .tvastra-key-highlights__toggle:hover,
+    .tvastra-key-highlights__toggle:focus-visible {
+      background: rgba(55,55,55,.84);
+      outline: none;
+    }
+    .tvastra-key-highlights__chevron {
+      width: 18px;
+      height: 18px;
+      display: block;
+      transition: transform .45s cubic-bezier(.22,.74,.2,1);
+    }
+    .tvastra-key-highlights__toggle[aria-expanded='true'] .tvastra-key-highlights__chevron {
+      transform: rotate(180deg);
+    }
+    @keyframes tvastraHighlightsTextIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
     @media (max-width: 767px) {
       .tvastra-key-highlights {
-        padding: 28px 20px 24px;
-        align-items: flex-start;
-        background: linear-gradient(90deg, rgba(10,10,10,.76) 0%, rgba(10,10,10,.48) 44%, rgba(10,10,10,.07) 76%, rgba(10,10,10,0) 100%);
+        --tvastra-kh-handle: 40px;
+        --tvastra-kh-width: 50%;
+        min-width: 0;
       }
-      .tvastra-key-highlights__inner { width: min(62%, 270px); }
+      .tvastra-key-highlights__panel {
+        border-radius: 10px 0 0 10px;
+      }
+      .tvastra-key-highlights__content {
+        padding: 28px 16px 22px 48px;
+      }
       .tvastra-key-highlights__title {
         margin-bottom: 22px;
-        font-size: clamp(28px, 9vw, 40px);
+        font-size: clamp(23px, 7vw, 30px);
       }
-      .tvastra-key-highlights__item { padding-bottom: 10px; margin-bottom: 10px; }
-      .tvastra-key-highlights__label { font-size: 12px; }
-      .tvastra-key-highlights__value { font-size: 16px; }
+      .tvastra-key-highlights__item {
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+      .tvastra-key-highlights__label { font-size: 11px; }
+      .tvastra-key-highlights__value { font-size: 15px; }
+      .tvastra-key-highlights__toggle {
+        height: 68px;
+        border-radius: 12px 0 0 12px;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
+      .tvastra-key-highlights__panel,
+      .tvastra-key-highlights__chevron {
+        transition: none;
+      }
       .tvastra-key-highlights__title,
       .tvastra-key-highlights__item {
         opacity: 1;
@@ -97,36 +167,52 @@
     }
   </style>
 
-  <div class="tvastra-key-highlights" aria-label="Key Highlights">
-    <div class="tvastra-key-highlights__inner">
-      <h2 class="tvastra-key-highlights__title">{{ tvastra_highlights_title | escape | newline_to_br }}</h2>
+  <div class="tvastra-key-highlights" data-tvastra-open="false" aria-label="Key Highlights">
+    <div class="tvastra-key-highlights__panel">
+      <div class="tvastra-key-highlights__content">
+        <h2 class="tvastra-key-highlights__title">{{ tvastra_highlights_title | escape }}</h2>
 
-      {%- if tvastra_highlights_type == 'list.single_line_text_field' -%}
-        {%- for highlight in tvastra_highlights_items -%}
-          {%- assign highlight_parts = highlight | split: '|' -%}
-          {%- assign highlight_label = highlight_parts[0] | strip -%}
-          {%- assign highlight_value = highlight_parts[1] | default: highlight_parts[0] | strip -%}
-          {%- if highlight_value != blank -%}
-            <div class="tvastra-key-highlights__item" style="--tvastra-highlight-delay: {{ forloop.index0 | times: 0.12 }}s;">
-              {%- if highlight_parts.size > 1 and highlight_label != blank -%}<span class="tvastra-key-highlights__label">{{ highlight_label | escape }}</span>{%- endif -%}
-              <span class="tvastra-key-highlights__value">{{ highlight_value | escape }}</span>
-            </div>
-          {%- endif -%}
-        {%- endfor -%}
-      {%- else -%}
-        {%- assign highlight_lines = tvastra_highlights_items | newline_to_br | split: '<br />' -%}
-        {%- for highlight in highlight_lines -%}
-          {%- assign highlight_parts = highlight | split: '|' -%}
-          {%- assign highlight_label = highlight_parts[0] | strip -%}
-          {%- assign highlight_value = highlight_parts[1] | default: highlight_parts[0] | strip -%}
-          {%- if highlight_value != blank -%}
-            <div class="tvastra-key-highlights__item" style="--tvastra-highlight-delay: {{ forloop.index0 | times: 0.12 }}s;">
-              {%- if highlight_parts.size > 1 and highlight_label != blank -%}<span class="tvastra-key-highlights__label">{{ highlight_label | escape }}</span>{%- endif -%}
-              <span class="tvastra-key-highlights__value">{{ highlight_value | escape }}</span>
-            </div>
-          {%- endif -%}
-        {%- endfor -%}
-      {%- endif -%}
+        {%- if tvastra_highlights_type == 'list.single_line_text_field' -%}
+          {%- for highlight in tvastra_highlights_items -%}
+            {%- assign highlight_parts = highlight | split: '|' -%}
+            {%- assign highlight_label = highlight_parts[0] | strip -%}
+            {%- assign highlight_value = highlight_parts[1] | default: highlight_parts[0] | strip -%}
+            {%- if highlight_value != blank -%}
+              <div class="tvastra-key-highlights__item" style="--tvastra-highlight-delay: {{ forloop.index0 | times: 0.11 }}s;">
+                {%- if highlight_parts.size > 1 and highlight_label != blank -%}
+                  <span class="tvastra-key-highlights__label">{{ highlight_label | escape }}</span>
+                {%- endif -%}
+                <span class="tvastra-key-highlights__value">{{ highlight_value | escape }}</span>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- else -%}
+          {%- assign highlight_lines = tvastra_highlights_items | newline_to_br | split: '<br />' -%}
+          {%- for highlight in highlight_lines -%}
+            {%- assign highlight_parts = highlight | split: '|' -%}
+            {%- assign highlight_label = highlight_parts[0] | strip -%}
+            {%- assign highlight_value = highlight_parts[1] | default: highlight_parts[0] | strip -%}
+            {%- if highlight_value != blank -%}
+              <div class="tvastra-key-highlights__item" style="--tvastra-highlight-delay: {{ forloop.index0 | times: 0.11 }}s;">
+                {%- if highlight_parts.size > 1 and highlight_label != blank -%}
+                  <span class="tvastra-key-highlights__label">{{ highlight_label | escape }}</span>
+                {%- endif -%}
+                <span class="tvastra-key-highlights__value">{{ highlight_value | escape }}</span>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      <button
+        type="button"
+        class="tvastra-key-highlights__toggle"
+        aria-expanded="false"
+        aria-label="Show key highlights"
+      >
+        <svg class="tvastra-key-highlights__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M8 4.5 15.5 12 8 19.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -138,17 +224,28 @@
           highlights.dataset.tvastraBound = 'true';
 
           var slide = highlights.closest('.product__media-item');
-          if (!slide) return;
+          var toggle = highlights.querySelector('.tvastra-key-highlights__toggle');
+          if (!slide || !toggle) return;
 
-          function sync() {
-            var active = slide.classList.contains('swiper-slide-active');
-            highlights.classList.toggle('tvastra-key-highlights--visible', active);
+          function setOpen(open) {
+            highlights.classList.toggle('is-open', open);
+            highlights.dataset.tvastraOpen = open ? 'true' : 'false';
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            toggle.setAttribute('aria-label', open ? 'Hide key highlights' : 'Show key highlights');
           }
 
-          sync();
+          setOpen(false);
+
+          toggle.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            setOpen(highlights.dataset.tvastraOpen !== 'true');
+          });
 
           if (window.MutationObserver) {
-            new MutationObserver(sync).observe(slide, { attributes: true, attributeFilter: ['class'] });
+            new MutationObserver(function () {
+              if (!slide.classList.contains('swiper-slide-active')) setOpen(false);
+            }).observe(slide, { attributes: true, attributeFilter: ['class'] });
           }
         });
       }
