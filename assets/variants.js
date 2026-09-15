@@ -267,7 +267,10 @@ class VariantSelects extends HTMLElement {
                         if (slideshowObj.classList.contains('product-image-main') || slideshowObj.classList.contains('product-style-2-main-img')) {
                           const sliderOptions = slideshowObj.sliderOptions;
                           setProductThumbSliderHeight();
-                          if (slideCount != undefined && slideCount === 1) {
+                          if (slideshowObj.classList.contains('product-image-main')) {
+                            sliderOptions["loop"] = false;
+                          }
+                          else if (slideCount != undefined && slideCount === 1) {
                             sliderOptions["loop"] = false;
                           }
                           else{
@@ -317,130 +320,3 @@ class VariantSelects extends HTMLElement {
               }
             }
         });
-
-        document.getElementById(`price-${this.dataset.section}`)?.classList.remove('visibility-hidden');
-        this.toggleAddButton(!this.currentVariant.available, window.variantStrings.soldOut);
-
-        const stickyVariantDropdown = document.querySelector('.product-variants-dd') || false;
-        if (stickyVariantDropdown) {
-          stickyVariantDropdown.value = this.currentVariant.id;
-          window.updateStickyAddtocartInfo(this.currentVariant.id);
-        }
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') console.error('Unable to update product variant', error);
-      });
-  }
-
-  toggleAddButton(disable = true, text, modifyClass = true) {
-    const addButton = document.getElementById(`product-form-${this.dataset.section}`)?.querySelector('[name="add"]');
-    if (!addButton) return;
-    const productButtons = addButton.closest('.product-form-buttons');
-    if (disable == true) {
-      if (window.isBackInStock == true && this.currentVariant) {
-        addButton.classList.add('notify-me');
-        addButton.setAttribute('type', 'button');
-        addButton.removeAttribute('disabled');
-        productButtons?.classList.add('is-notify-only');
-        addButton.innerHTML = '<span class="notify-text-btn">Notify me when back in stock</span>';
-        $('.shopify-payment-button').hide();
-        const productImgSrc = this.currentVariant.featured_image.src,
-              productVariantsTitle = this.currentVariant.title,
-              productPrice = Shopify.formatMoney(this.currentVariant.price);
-        $('.notify-me').on('click', function () {
-          $(".product-img-item").attr('src', productImgSrc);
-          $(".variant-title").text(productVariantsTitle);
-          $(".variant-price").text(productPrice);
-          $("[name='contact[variant]']").val(productVariantsTitle);
-          $.magnificPopup.open({
-              items: {
-                  src: $('.back-in-stock-popup').html(),
-                  type: 'inline'
-              }
-          });
-        });
-      }
-      else{
-        $('.notify-me').off('click')
-        addButton.classList.remove('notify-me');
-        addButton.setAttribute('type', 'button');
-        productButtons?.classList.add('is-notify-only');
-        addButton.setAttribute('disabled', true);
-        document.querySelector('.product-summary .product-form-buttons')?.classList.add('disabled-btn');
-        if (text) addButton.innerHTML = text;
-      }
-    } else {
-      $('.product-form__error-message-wrapper').addClass("d-none");
-      $('.notify-me').off('click')
-      addButton.classList.remove('notify-me');
-      addButton.setAttribute('type', 'submit');
-      productButtons?.classList.remove('is-notify-only');
-      $('.shopify-payment-button').show();
-      addButton.removeAttribute('disabled');
-      //addButton.innerHTML = window.variantStrings.addToCart;
-    }
-    const slected_variant = document.querySelectorAll('.product-filter:not(:first-child) [data-single-option]:checked');
-      const Allvariant = document.querySelectorAll('.product-filter:not(:first-child) [data-single-option]');
-      slected_variant.forEach(function(selectItem, selectItemIndex){
-        if (selectItem.classList.contains("soldout-opt") == true && window.isBackInStock == false) {
-          var productOnloadAvailableVariant = '';
-          Allvariant.forEach(function(allItem, allItemIndex){
-            if(!allItem.classList.contains("unavailable-opt") && !allItem.classList.contains("soldout-opt")){
-              productOnloadAvailableVariant = allItem;
-            }
-          })
-          $(productOnloadAvailableVariant).trigger( "click" );  
-        }
-      })
-    if (!modifyClass) return;
-  }
-
-  setUnavailable() {
-    const addButton = document.getElementById(`product-form-${this.dataset.section}`)?.querySelector('[name="add"]');
-    if (!addButton) return;
-    addButton.innerHTML = window.variantStrings.unavailable;
-    document.getElementById(`price-${this.dataset.section}`)?.classList.add('visibility-hidden');
-    document.querySelector('.product-summary .product-form-buttons')?.classList.add('disabled-btn');
-    const optionNodes = document.querySelectorAll('.product-filter:not(:first-child) [data-single-option]:checked');
-    const Allvariant = document.querySelectorAll('.product-filter:not(:first-child) [data-single-option]');
-    optionNodes.forEach(function(optionItem, optionItemIndex){
-      optionItem.classList.add('unavailable-opt');
-    })
-    var productOnChangeAvailableVariant = '';
-    Allvariant.forEach(function(optionItem, optionItemIndex){
-      if(!optionItem.classList.contains("unavailable-opt")){
-        productOnChangeAvailableVariant = optionItem;
-      }
-    })
-        $( productOnChangeAvailableVariant).trigger( "click" );  
-  }
-
-  getVariantData() {
-    this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
-    return this.variantData;
-  }
-}
-
-customElements.define('variant-selects', VariantSelects);
-
-class VariantRadios extends VariantSelects {
-  constructor() {
-    super();
-  }
-
-  updateOptions() {
-    const fieldsets = Array.from(this.querySelectorAll('fieldset'));
-    var options = [];
-    fieldsets.forEach(function(fieldset) {
-        if (fieldset.classList.contains('dropdown')) {
-          options.push(fieldset.querySelector('select').value);
-        } else {
-          options.push(fieldset.querySelector('input:checked').value);
-        }
-    });
-    
-    this.options = options;
-  }
-}
-
-customElements.define('variant-radios', VariantRadios);
