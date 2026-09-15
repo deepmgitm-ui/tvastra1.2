@@ -1,0 +1,107 @@
+<script>
+  (function () {
+    function bindTvastraProductVideoDrag() {
+      var root = document.querySelector('[data-tvastra-product-video]');
+      var trigger = root && root.querySelector('.tvastra-product-video-float__trigger');
+      var dismiss = root && root.querySelector('[data-tvastra-product-video-dismiss]');
+      if (!root || !trigger || root.dataset.tvastraDragFixBound === 'true') return;
+      root.dataset.tvastraDragFixBound = 'true';
+
+      var drag = {
+        active: false,
+        moved: false,
+        pointerId: null,
+        startX: 0,
+        startY: 0,
+        originX: 0,
+        originY: 0
+      };
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function start(event) {
+        if (root.hidden) return;
+        if (event.button !== undefined && event.button !== 0 && event.pointerType !== 'touch') return;
+        if (dismiss && (event.target === dismiss || dismiss.contains(event.target))) return;
+
+        var rect = root.getBoundingClientRect();
+        drag.active = true;
+        drag.moved = false;
+        drag.pointerId = event.pointerId;
+        drag.startX = event.clientX;
+        drag.startY = event.clientY;
+        drag.originX = rect.left;
+        drag.originY = rect.top;
+
+        root.classList.add('is-dragging');
+        root.style.right = 'auto';
+        root.style.bottom = 'auto';
+        root.style.left = rect.left + 'px';
+        root.style.top = rect.top + 'px';
+
+        if (event.pointerId !== undefined && root.setPointerCapture) {
+          try { root.setPointerCapture(event.pointerId); } catch (error) {}
+        }
+      }
+
+      function move(event) {
+        if (!drag.active || (drag.pointerId !== null && event.pointerId !== drag.pointerId)) return;
+
+        var dx = event.clientX - drag.startX;
+        var dy = event.clientY - drag.startY;
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) drag.moved = true;
+        if (!drag.moved) return;
+
+        var maxX = Math.max(6, window.innerWidth - root.offsetWidth - 6);
+        var maxY = Math.max(6, window.innerHeight - root.offsetHeight - 6);
+        root.style.left = clamp(drag.originX + dx, 6, maxX) + 'px';
+        root.style.top = clamp(drag.originY + dy, 6, maxY) + 'px';
+
+        if (event.cancelable) event.preventDefault();
+      }
+
+      function end(event) {
+        if (!drag.active || (drag.pointerId !== null && event.pointerId !== drag.pointerId)) return;
+
+        if (drag.pointerId !== null && root.releasePointerCapture) {
+          try { root.releasePointerCapture(drag.pointerId); } catch (error) {}
+        }
+
+        root.classList.remove('is-dragging');
+        drag.active = false;
+        drag.pointerId = null;
+
+        if (drag.moved) {
+          window.setTimeout(function () {
+            drag.moved = false;
+          }, 120);
+        } else {
+          drag.moved = false;
+        }
+      }
+
+      function suppressClick(event) {
+        if (drag.moved) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }
+
+      root.addEventListener('pointerdown', start);
+      root.addEventListener('pointermove', move);
+      root.addEventListener('pointerup', end);
+      root.addEventListener('pointercancel', end);
+      trigger.addEventListener('click', suppressClick, true);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindTvastraProductVideoDrag);
+    } else {
+      bindTvastraProductVideoDrag();
+    }
+
+    document.addEventListener('shopify:section:load', bindTvastraProductVideoDrag);
+  })();
+</script>
