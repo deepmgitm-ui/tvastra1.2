@@ -92,7 +92,7 @@
       var modalVideo = modal ? modal.querySelector('.tvastra-product-video-modal__video-wrap video') : null;
       var closeButtons = root.querySelectorAll('[data-tvastra-product-video-close]');
       var lastFocused = null;
-      var drag = { active: false, moved: false, pointerId: null, startX: 0, startY: 0, originX: 0, originY: 0 };
+      var drag = { active: false, moved: false, pointerId: null, pointerType: null, startX: 0, startY: 0, originX: 0, originY: 0 };
 
       function safePlay(video) {
         if (!video) return;
@@ -129,12 +129,14 @@
       }
       function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
       function startDrag(event) {
-        if (event.button !== undefined && event.button !== 0 && event.pointerType !== 'touch') return;
+        var type = event.pointerType || 'mouse';
+        if (type === 'mouse' && event.buttons !== 1) return;
         if (event.target && dismiss && (event.target === dismiss || dismiss.contains(event.target))) return;
         var rect = root.getBoundingClientRect();
         drag.active = true;
         drag.moved = false;
         drag.pointerId = event.pointerId;
+        drag.pointerType = type;
         drag.startX = event.clientX;
         drag.startY = event.clientY;
         drag.originX = rect.left;
@@ -147,9 +149,14 @@
         if (root.setPointerCapture && event.pointerId !== undefined) {
           try { root.setPointerCapture(event.pointerId); } catch (error) {}
         }
+        if (event.cancelable) event.preventDefault();
       }
       function moveDrag(event) {
         if (!drag.active || (drag.pointerId !== null && event.pointerId !== drag.pointerId)) return;
+        if (drag.pointerType === 'mouse' && event.buttons !== 1) {
+          endDrag(event);
+          return;
+        }
         var dx = event.clientX - drag.startX;
         var dy = event.clientY - drag.startY;
         if (Math.abs(dx) > 6 || Math.abs(dy) > 6) drag.moved = true;
@@ -168,6 +175,7 @@
         root.classList.remove('is-dragging');
         drag.active = false;
         drag.pointerId = null;
+        drag.pointerType = null;
         window.setTimeout(function () { drag.moved = false; }, 0);
       }
 
