@@ -1,0 +1,121 @@
+{%- liquid
+  assign tvastra_video_field = product.metafields.custom.video
+  if tvastra_video_field == blank
+    assign tvastra_video_field = product.metafields.custom.popup_video
+  endif
+  if tvastra_video_field == blank
+    assign tvastra_video_field = product.metafields.custom.product_video
+  endif
+  if tvastra_video_field == blank
+    assign tvastra_video_field = product.metafields.custom.video_url
+  endif
+
+  assign tvastra_video_markup = ''
+  if tvastra_video_field != blank
+    capture tvastra_video_markup
+      echo tvastra_video_field | metafield_tag
+    endcapture
+  endif
+-%}
+
+{%- if tvastra_video_markup contains '<video' -%}
+  <style>
+    .tvastra-video-float { display: none !important; }
+    .tvastra-product-video-float { position: fixed; right: 16px; bottom: 20px; z-index: 2147483000; width: 118px; max-width: calc(100vw - 32px); }
+    .tvastra-product-video-float__trigger { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 16px; overflow: hidden; background: #111; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,.22); transform: translateZ(0); transition: transform .22s ease, box-shadow .22s ease; -webkit-tap-highlight-color: transparent; }
+    .tvastra-product-video-float__trigger:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(0,0,0,.26); }
+    .tvastra-product-video-float__preview, .tvastra-product-video-float__preview video { display: block; width: 100%; aspect-ratio: 3/4; }
+    .tvastra-product-video-float__preview video { height: auto; object-fit: cover; background: #111; }
+    .tvastra-product-video-float__trigger::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(0,0,0,.58), rgba(0,0,0,0) 52%); }
+    .tvastra-product-video-float__play { position: absolute; z-index: 2; top: 50%; left: 50%; display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; background: rgba(255,255,255,.92); box-shadow: 0 4px 14px rgba(0,0,0,.18); transform: translate(-50%,-50%); }
+    .tvastra-product-video-float__play svg { width: 17px; height: 17px; margin-left: 2px; fill: #111; }
+    .tvastra-product-video-float__label { position: absolute; z-index: 2; right: 8px; bottom: 7px; left: 8px; overflow: hidden; color: #fff; font-size: 11px; font-weight: 600; line-height: 1.2; text-align: center; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
+    .tvastra-product-video-modal { position: fixed; inset: 0; z-index: 2147483001; display: grid; place-items: center; padding: 20px; }
+    .tvastra-product-video-modal[hidden] { display: none; }
+    .tvastra-product-video-modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.84); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); animation: tvastraProductVideoFadeIn .2s ease; }
+    .tvastra-product-video-modal__dialog { position: relative; z-index: 1; width: min(92vw,560px); max-height: 92vh; animation: tvastraProductVideoZoomIn .24s cubic-bezier(.2,.8,.2,1); }
+    .tvastra-product-video-modal__video-wrap { display: flex; width: 100%; max-height: 92vh; justify-content: center; overflow: hidden; border-radius: 18px; background: #000; box-shadow: 0 30px 90px rgba(0,0,0,.4); }
+    .tvastra-product-video-modal__video-wrap video { display: block; width: auto; max-width: 100%; height: auto; max-height: 92vh; object-fit: contain; }
+    .tvastra-product-video-modal__close { position: absolute; z-index: 3; top: -12px; right: -12px; display: grid; width: 42px; height: 42px; padding: 0; place-items: center; border: 1px solid rgba(255,255,255,.28); border-radius: 50%; background: rgba(17,17,17,.92); color: #fff; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.3); -webkit-tap-highlight-color: transparent; }
+    .tvastra-product-video-modal__close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-width: 2; }
+    html.tvastra-product-video-lock, body.tvastra-product-video-lock { overflow: hidden !important; }
+    @keyframes tvastraProductVideoFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes tvastraProductVideoZoomIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+    @media (max-width:575px) {
+      .tvastra-product-video-float { right: 12px; bottom: 86px; width: 94px; }
+      .tvastra-product-video-float__trigger { border-radius: 14px; }
+      .tvastra-product-video-float__play { width: 34px; height: 34px; }
+      .tvastra-product-video-float__play svg { width: 15px; height: 15px; }
+      .tvastra-product-video-float__label { font-size: 10px; }
+      .tvastra-product-video-modal { padding: 12px; }
+      .tvastra-product-video-modal__dialog { width: min(96vw,560px); max-height: 96vh; }
+      .tvastra-product-video-modal__video-wrap, .tvastra-product-video-modal__video-wrap video { max-height: 96vh; }
+      .tvastra-product-video-modal__video-wrap { border-radius: 14px; }
+      .tvastra-product-video-modal__close { top: 8px; right: 8px; width: 38px; height: 38px; }
+    }
+  </style>
+
+  <div class="tvastra-product-video-float" data-tvastra-product-video>
+    <button class="tvastra-product-video-float__trigger" type="button" aria-label="Open product video" aria-haspopup="dialog" aria-controls="TvastraProductVideoModal-{{ section.id }}">
+      <span class="tvastra-product-video-float__preview">{{ tvastra_video_markup }}</span>
+      <span class="tvastra-product-video-float__play" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"></path></svg></span>
+      <span class="tvastra-product-video-float__label">Watch video</span>
+    </button>
+
+    <div class="tvastra-product-video-modal" id="TvastraProductVideoModal-{{ section.id }}" data-tvastra-product-video-modal hidden>
+      <div class="tvastra-product-video-modal__backdrop" data-tvastra-product-video-close></div>
+      <div class="tvastra-product-video-modal__dialog" role="dialog" aria-modal="true" aria-label="Product video">
+        <button class="tvastra-product-video-modal__close" type="button" aria-label="Close product video" data-tvastra-product-video-close><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+        <div class="tvastra-product-video-modal__video-wrap">{{ tvastra_video_markup }}</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.querySelector('[data-tvastra-product-video]');
+      if (!root || root.dataset.tvastraProductVideoBound === 'true') return;
+      root.dataset.tvastraProductVideoBound = 'true';
+
+      var trigger = root.querySelector('.tvastra-product-video-float__trigger');
+      var modal = root.querySelector('[data-tvastra-product-video-modal]');
+      var previewVideo = root.querySelector('.tvastra-product-video-float__preview video');
+      var modalVideo = modal ? modal.querySelector('.tvastra-product-video-modal__video-wrap video') : null;
+      var closeButtons = root.querySelectorAll('[data-tvastra-product-video-close]');
+      var lastFocused = null;
+
+      function safePlay(video) {
+        if (!video) return;
+        try { var promise = video.play(); if (promise && typeof promise.catch === 'function') promise.catch(function () {}); } catch (error) {}
+      }
+      function safePause(video) { if (!video) return; try { video.pause(); } catch (error) {} }
+      function preparePreview() {
+        if (!previewVideo) return;
+        previewVideo.muted = true; previewVideo.defaultMuted = true; previewVideo.autoplay = true; previewVideo.loop = true; previewVideo.playsInline = true; previewVideo.preload = 'metadata';
+        previewVideo.setAttribute('muted',''); previewVideo.setAttribute('autoplay',''); previewVideo.setAttribute('loop',''); previewVideo.setAttribute('playsinline','');
+        safePlay(previewVideo);
+      }
+      function openModal() {
+        if (!modal) return;
+        lastFocused = document.activeElement; modal.hidden = false;
+        document.documentElement.classList.add('tvastra-product-video-lock'); document.body.classList.add('tvastra-product-video-lock');
+        safePause(previewVideo);
+        if (modalVideo) { modalVideo.controls = true; modalVideo.muted = false; modalVideo.volume = 1; modalVideo.playsInline = true; modalVideo.loop = true; modalVideo.currentTime = 0; safePlay(modalVideo); }
+        var closeButton = modal.querySelector('.tvastra-product-video-modal__close');
+        if (closeButton && typeof closeButton.focus === 'function') { try { closeButton.focus({preventScroll:true}); } catch (error) { closeButton.focus(); } }
+      }
+      function closeModal() {
+        if (!modal || modal.hidden) return;
+        modal.hidden = true; safePause(modalVideo);
+        document.documentElement.classList.remove('tvastra-product-video-lock'); document.body.classList.remove('tvastra-product-video-lock');
+        preparePreview();
+        if (lastFocused && typeof lastFocused.focus === 'function') { try { lastFocused.focus({preventScroll:true}); } catch (error) { lastFocused.focus(); } }
+      }
+      preparePreview();
+      if (trigger) trigger.addEventListener('click', openModal);
+      closeButtons.forEach(function (button) { button.addEventListener('click', closeModal); });
+      document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && modal && !modal.hidden) closeModal(); });
+      document.addEventListener('visibilitychange', function () { if (document.hidden) { safePause(previewVideo); safePause(modalVideo); } else if (modal && modal.hidden) preparePreview(); });
+    })();
+  </script>
+{%- endif -%}
