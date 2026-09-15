@@ -1,0 +1,137 @@
+{%- liquid
+  assign tvastra_highlights_field = product.metafields.custom.key_highlights
+  assign tvastra_highlights_title = product.metafields.custom.key_highlights_title.value | default: 'Key Highlights'
+  assign tvastra_highlights_type = tvastra_highlights_field.type
+  assign tvastra_highlights_items = tvastra_highlights_field.value
+-%}
+
+{%- if tvastra_highlights_field != blank and tvastra_highlights_items != blank -%}
+  <style>
+    .tvastra-key-highlights {
+      position: absolute;
+      z-index: 4;
+      inset: 0;
+      display: flex;
+      align-items: flex-start;
+      padding: clamp(24px, 5vw, 58px) clamp(20px, 5vw, 54px);
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(10,10,10,.72) 0%, rgba(10,10,10,.48) 30%, rgba(10,10,10,.10) 58%, rgba(10,10,10,0) 78%);
+      color: #fff;
+    }
+    .tvastra-key-highlights__inner {
+      width: min(43%, 390px);
+      max-width: 100%;
+    }
+    .tvastra-key-highlights__title {
+      margin: 0 0 clamp(22px, 4vw, 34px);
+      font-size: clamp(28px, 3.2vw, 46px);
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -.03em;
+      text-transform: none;
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    .swiper-slide-active .tvastra-key-highlights__title {
+      animation: tvastraHighlightsTitle .65s cubic-bezier(.2,.75,.2,1) .08s forwards;
+    }
+    .tvastra-key-highlights__item {
+      padding: 0 0 13px;
+      margin: 0 0 13px;
+      border-bottom: 1px solid rgba(255,255,255,.34);
+      opacity: 0;
+      transform: translateX(-18px);
+    }
+    .swiper-slide-active .tvastra-key-highlights__item {
+      animation: tvastraHighlightsItem .58s cubic-bezier(.2,.75,.2,1) forwards;
+    }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(2) { animation-delay: .22s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(3) { animation-delay: .34s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(4) { animation-delay: .46s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(5) { animation-delay: .58s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(6) { animation-delay: .70s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(7) { animation-delay: .82s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(8) { animation-delay: .94s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(9) { animation-delay: 1.06s; }
+    .swiper-slide-active .tvastra-key-highlights__item:nth-child(10) { animation-delay: 1.18s; }
+    .tvastra-key-highlights__label {
+      display: block;
+      margin: 0 0 3px;
+      color: rgba(255,255,255,.70);
+      font-size: clamp(11px, 1.1vw, 15px);
+      font-weight: 400;
+      line-height: 1.25;
+    }
+    .tvastra-key-highlights__value {
+      display: block;
+      color: #fff;
+      font-size: clamp(15px, 1.55vw, 22px);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    @keyframes tvastraHighlightsTitle {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes tvastraHighlightsItem {
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @media (max-width: 767px) {
+      .tvastra-key-highlights {
+        padding: 28px 20px 24px;
+        align-items: flex-start;
+        background: linear-gradient(90deg, rgba(10,10,10,.72) 0%, rgba(10,10,10,.44) 44%, rgba(10,10,10,.06) 76%, rgba(10,10,10,0) 100%);
+      }
+      .tvastra-key-highlights__inner { width: min(58%, 260px); }
+      .tvastra-key-highlights__title {
+        margin-bottom: 22px;
+        font-size: clamp(28px, 9vw, 40px);
+      }
+      .tvastra-key-highlights__item { padding-bottom: 10px; margin-bottom: 10px; }
+      .tvastra-key-highlights__label { font-size: 12px; }
+      .tvastra-key-highlights__value { font-size: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tvastra-key-highlights__title,
+      .tvastra-key-highlights__item {
+        opacity: 1;
+        transform: none;
+        animation: none !important;
+      }
+    }
+  </style>
+
+  <div class="tvastra-key-highlights" aria-label="{{ tvastra_highlights_title | escape }}">
+    <div class="tvastra-key-highlights__inner">
+      <h2 class="tvastra-key-highlights__title">{{ tvastra_highlights_title | escape | newline_to_br }}</h2>
+
+      {%- if tvastra_highlights_type == 'list.single_line_text_field' -%}
+        {%- for highlight in tvastra_highlights_items -%}
+          {%- assign highlight_parts = highlight | split: '|' -%}
+          {%- assign highlight_label = highlight_parts[0] | strip -%}
+          {%- assign highlight_value = highlight_parts[1] | default: highlight_parts[0] | strip -%}
+          {%- if highlight_value != blank -%}
+            <div class="tvastra-key-highlights__item">
+              {%- if highlight_parts.size > 1 and highlight_label != blank -%}<span class="tvastra-key-highlights__label">{{ highlight_label | escape }}</span>{%- endif -%}
+              <span class="tvastra-key-highlights__value">{{ highlight_value | escape }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- assign highlight_lines = tvastra_highlights_items | newline_to_br | split: '<br />' -%}
+        {%- for highlight in highlight_lines -%}
+          {%- assign highlight_parts = highlight | split: '|' -%}
+          {%- assign highlight_label = highlight_parts[0] | strip -%}
+          {%- assign highlight_value = highlight_parts[1] | default: highlight_parts[0] | strip -%}
+          {%- if highlight_value != blank -%}
+            <div class="tvastra-key-highlights__item">
+              {%- if highlight_parts.size > 1 and highlight_label != blank -%}<span class="tvastra-key-highlights__label">{{ highlight_label | escape }}</span>{%- endif -%}
+              <span class="tvastra-key-highlights__value">{{ highlight_value | escape }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
