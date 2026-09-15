@@ -22,6 +22,7 @@
       min-width: 250px;
       pointer-events: none;
       color: #fff;
+      overflow: visible;
     }
     .tvastra-key-highlights__panel {
       position: absolute;
@@ -96,20 +97,23 @@
       padding: 0;
       border: 0;
       border-radius: 14px 0 0 14px;
-      background: rgba(75,75,75,.72);
+      background: rgba(75,75,75,.78);
       color: #fff;
       display: grid;
       place-items: center;
-      transform: translateY(-50%);
+      transform: translate(calc(100% - var(--tvastra-kh-handle)), -50%);
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: -8px 0 22px rgba(0,0,0,.10);
-      transition: background .25s ease, width .25s ease;
+      box-shadow: -8px 0 22px rgba(0,0,0,.12);
+      transition: transform .62s cubic-bezier(.22,.76,.16,1), background .25s ease, box-shadow .25s ease;
       -webkit-tap-highlight-color: transparent;
+    }
+    .tvastra-key-highlights.is-open .tvastra-key-highlights__toggle {
+      transform: translate(0, -50%);
     }
     .tvastra-key-highlights__toggle:hover,
     .tvastra-key-highlights__toggle:focus-visible {
-      background: rgba(55,55,55,.84);
+      background: rgba(55,55,55,.86);
       outline: none;
     }
     .tvastra-key-highlights__chevron {
@@ -156,6 +160,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .tvastra-key-highlights__panel,
+      .tvastra-key-highlights__toggle,
       .tvastra-key-highlights__chevron {
         transition: none;
       }
