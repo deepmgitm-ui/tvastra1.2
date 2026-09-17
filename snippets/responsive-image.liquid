@@ -23,7 +23,10 @@
   {%- endif -%}
 {%- endcapture -%}
 {%- if include_srcset == false -%}
-  <div class="h-100">
+  <div
+    class="h-100{% if natural_product_media %} natural-product-media{% endif %}"
+    {% if natural_product_media %}style="position:static!important; inset:auto!important; display:block!important; width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"{% endif %}
+  >
 {%- else -%}
   <image-srcset class="res-image{% if image == blank %} placeholder-img{% endif %}" data-image-loading style="{{ style | strip | strip_newlines }}">
 {%- endif -%}
@@ -48,6 +51,7 @@
         width="{{ image_width }}"
         height="{{ image.height | default: image_width }}"
         class="{% if zoom_image == true %}preview-image product-frame-image{% endif %}"
+        {% if natural_product_media %}style="position:static!important; inset:auto!important; display:block!important; width:100%!important; height:auto!important; max-width:100%!important; max-height:none!important; aspect-ratio:auto!important; object-fit:initial!important; object-position:initial!important;"{% endif %}
         {%- if zoom_image == true %}
           data-master-image="{{ image | image_url }}"
           data-master-image-width="{{ image.preview_image.width | default: image.width }}"
@@ -92,7 +96,6 @@
         {%- if alt_image.width >= 940 -%}{{ alt_image | image_url: width: 940 }} 940w,{%- endif -%}
         {%- if alt_image.width >= 1066 -%}{{ alt_image | image_url: width: 1066 }} 1066w,{%- endif -%}
         {{ alt_image | image_url }} {{ alt_image.width }}w"
-      src="{{ alt_image_url }}"
       sizes="(min-width: {{ settings.container_width }}px) {{ settings.container_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2)"
       alt="{{ alt_image.alt | escape }}"
       loading="lazy"
