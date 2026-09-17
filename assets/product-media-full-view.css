@@ -374,3 +374,44 @@
     padding-top: 0 !important;
   }
 }
+
+/* Mobile carousel video: deliberately make the video frame shorter than the product image.
+   The gallery still uses the same 74% width, but video height is capped to a compact 20:23 frame
+   so a tall source video cannot keep the gallery/container excessively high. */
+@media (max-width: 767px) {
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .local-video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video .plyr,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video .plyr__video-wrapper,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .plyr-external-video {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 20 / 23 !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video > video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .local-video > video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video .plyr video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .plyr-external-video video {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video > iframe,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .local-video > iframe,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video .plyr iframe,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .plyr-external-video iframe {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    border: 0 !important;
+  }
+}
