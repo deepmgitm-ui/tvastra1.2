@@ -1,55 +1,23 @@
 name: Tvastra mobile fold fix
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 permissions:
   contents: write
 jobs:
   fix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Apply compact mobile fold
         shell: bash
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('assets/product-media-full-view.css')
-          s = p.read_text()
-          marker = '/* Tvastra mobile fold: keep the current media size, but pull the product information upward so Colour is visible in the initial viewport. */'
-          if marker not in s:
-              s += r'''
-
-/* Tvastra mobile fold: keep the current media size, but pull the product information upward so Colour is visible in the initial viewport. */
-@media (max-width: 767px) {
-  .main-product-page {
-    padding-top: 8px !important;
-  }
-
-  .main-product-page .product-gallery {
-    margin-bottom: -24px !important;
-  }
-
-  .main-product-page .product-gallery .product-thumb-wrap {
-    margin-top: 2px !important;
-    padding-bottom: 0 !important;
-  }
-
-  .main-product-page .product-summary {
-    margin-top: 0 !important;
-  }
-
-  .main-product-page .product-summary > .position-sticky {
-    padding-top: 0 !important;
-  }
-}
-'''
-              p.write_text(s)
-          PY
+          python3 -c "from pathlib import Path; p=Path('assets/product-media-full-view.css'); s=p.read_text(); m='/* Tvastra mobile fold: keep the current media size, but pull the product information upward so Colour is visible in the initial viewport. */'; extra='''\n\n/* Tvastra mobile fold: keep the current media size, but pull the product information upward so Colour is visible in the initial viewport. */\n@media (max-width: 767px) {\n  .main-product-page {\n    padding-top: 8px !important;\n  }\n\n  .main-product-page .product-gallery {\n    margin-bottom: -24px !important;\n  }\n\n  .main-product-page .product-gallery .product-thumb-wrap {\n    margin-top: 2px !important;\n    padding-bottom: 0 !important;\n  }\n\n  .main-product-page .product-summary {\n    margin-top: 0 !important;\n  }\n\n  .main-product-page .product-summary > .position-sticky {\n    padding-top: 0 !important;\n  }\n}\n'''; p.write_text(s if m in s else s+extra)"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/product-media-full-view.css
-          git commit -m "Compact mobile product fold" || true
-          git rm .github/workflows/tvastra-mobile-fold-fix.yml
-          git commit -m "Remove temporary fold fix workflow" || true
+          git rm -f .github/workflows/tvastra-mobile-fold-fix.yml assets/.tvastra-mobile-fold-trigger
+          git commit -m "Compact mobile product fold"
           git push origin main
