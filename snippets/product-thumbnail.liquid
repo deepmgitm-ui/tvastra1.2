@@ -43,7 +43,10 @@
 {%- else -%}
   {%- case media.media_type -%}
     {%- when 'image' -%}
-      <div class="product-media overflow-hidden media-image h-100" style="{{ border_style }}">
+      <div
+        class="product-media overflow-hidden media-image h-100"
+        style="{{ border_style }} height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"
+      >
         {%- if gellery_type == 'grid-2-columns' or gellery_type == 'grid-1-columns' or section.settings.product_gellery == 'combined-grid' -%}
           <a
             href="#"
@@ -66,7 +69,8 @@
           zoom_image: true,
           include_srcset: false,
           image_width: 1400,
-          loading: media_loading
+          loading: media_loading,
+          natural_product_media: true
         -%}
       </div>
     {%- when 'external_video' -%}
