@@ -258,3 +258,55 @@
     object-fit: contain !important;
   }
 }
+
+/* Desktop/tablet override: remove the legacy fixed-height media box as well. */
+.main-product-page .product-gallery .product-main-slider .product-image-main .swiper-wrapper,
+.main-product-page .product-gallery .product-main-slider .product-image-main .swiper-slide,
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-media,
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image,
+.main-product-page .product-gallery .product-main-slider .product-image-main image-srcset.res-image,
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image > .h-100,
+.main-product-page .product-gallery .product-main-slider .product-image-main {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+}
+
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image > .h-100 {
+  position: static !important;
+  inset: auto !important;
+}
+
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-media,
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image,
+.main-product-page .product-gallery .product-main-slider .product-image-main image-srcset.res-image {
+  width: 100% !important;
+  background: transparent !important;
+}
+
+.main-product-page .product-gallery .product-main-slider .product-image-main .preview-image,
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-frame-image,
+.main-product-page .product-gallery .product-main-slider .product-image-main .product-media img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  object-fit: initial !important;
+  object-position: initial !important;
+}
+
+.main-product-page .product-gallery .product-main-slider .product-image-main .media-video,
+.main-product-page .product-gallery .product-main-slider .product-image-main .local-video,
+.main-product-page .product-gallery .product-main-slider .product-image-main .media-video video,
+.main-product-page .product-gallery .product-main-slider .product-image-main .media-video iframe,
+.main-product-page .product-gallery .product-main-slider .product-image-main .plyr,
+.main-product-page .product-gallery .product-main-slider .product-image-main .plyr__video-wrapper,
+.main-product-page .product-gallery .product-main-slider .product-image-main .plyr-external-video {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+}
