@@ -193,4 +193,49 @@
       document.addEventListener('visibilitychange', function () { if (document.hidden) { safePause(previewVideo); safePause(modalVideo); } else if (modal && modal.hidden && !root.hidden) preparePreview(); });
     })();
   </script>
+
+  <style>
+    @media (max-width: 767px) {
+      .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .preview-image,
+      .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .product-frame-image,
+      .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image img {
+        transform: scale(.88) !important;
+        transform-origin: center center !important;
+      }
+    }
+  </style>
+
+  <script>
+    (function () {
+      var root = document.querySelector('[data-tvastra-product-video]');
+      if (!root || root.dataset.tvastraProductVideoPositionBound === 'true') return;
+      root.dataset.tvastraProductVideoPositionBound = 'true';
+
+      function positionAboveProductInfo() {
+        if (window.innerWidth > 767 || root.hidden) return;
+        if (root.style.left && root.style.left !== 'auto') return;
+
+        var productInfo = document.querySelector('.main-product-page .product-summary');
+        if (!productInfo) return;
+
+        var infoRect = productInfo.getBoundingClientRect();
+        var viewportH = window.innerHeight || document.documentElement.clientHeight;
+        var videoHeight = root.offsetHeight || 130;
+        var gap = 12;
+
+        if (infoRect.top > videoHeight + gap + 12 && infoRect.top < viewportH - 8) {
+          root.style.top = 'auto';
+          root.style.bottom = Math.max(12, viewportH - infoRect.top + gap) + 'px';
+        } else {
+          root.style.top = 'auto';
+          root.style.bottom = '86px';
+        }
+      }
+
+      window.addEventListener('load', positionAboveProductInfo);
+      window.addEventListener('resize', positionAboveProductInfo);
+      window.addEventListener('scroll', positionAboveProductInfo, { passive: true });
+      positionAboveProductInfo();
+    })();
+  </script>
 {%- endif -%}
