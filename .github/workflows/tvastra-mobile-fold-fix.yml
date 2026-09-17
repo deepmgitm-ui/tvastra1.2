@@ -1,0 +1,55 @@
+name: Tvastra mobile fold fix
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply compact mobile fold
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('assets/product-media-full-view.css')
+          s = p.read_text()
+          marker = '/* Tvastra mobile fold: keep the current media size, but pull the product information upward so Colour is visible in the initial viewport. */'
+          if marker not in s:
+              s += r'''
+
+/* Tvastra mobile fold: keep the current media size, but pull the product information upward so Colour is visible in the initial viewport. */
+@media (max-width: 767px) {
+  .main-product-page {
+    padding-top: 8px !important;
+  }
+
+  .main-product-page .product-gallery {
+    margin-bottom: -24px !important;
+  }
+
+  .main-product-page .product-gallery .product-thumb-wrap {
+    margin-top: 2px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .main-product-page .product-summary {
+    margin-top: 0 !important;
+  }
+
+  .main-product-page .product-summary > .position-sticky {
+    padding-top: 0 !important;
+  }
+}
+'''
+              p.write_text(s)
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/product-media-full-view.css
+          git commit -m "Compact mobile product fold" || true
+          git rm .github/workflows/tvastra-mobile-fold-fix.yml
+          git commit -m "Remove temporary fold fix workflow" || true
+          git push origin main
