@@ -14,168 +14,38 @@
   %}
 {%- endcomment -%}
 {%- if type == 'thumb' -%}
-  <div
-    class="product-media overflow-hidden media-{{ media.media_type }}"
-    data-media-id="{{ media.id }}"
-    style="{{ border_style }}"
-  >
-    {%- if media.media_type == 'model' -%}
-      <span class="media-icon"><i class="bi bi-box"></i></span>
-    {%- elsif media.media_type == 'external_video' or media.media_type == 'video' -%}
-      <span class="media-icon"><i class="bi bi-camera-video"></i></span>
-    {%- endif -%}
-    <img
-      srcset="{{ media.preview_image | image_url }}"
-      src="{{ media | image_url }}"
-      alt="{{ media.alt | default: product.title | default: shop.name | escape }}"
-      width="576"
-      height="{{ 576 | divided_by: media.preview_image.aspect_ratio | ceil }}"        
-      {% if gellery_type == 'grid-2-columns' or gellery_type == 'grid-1-columns' or section.settings.product_gellery == 'combined-grid' %}
-        sizes="(min-width: 1200px) calc((1200px - 10rem) / 2), (min-width: 750px) calc((100vw - 11.5rem) / 2), calc(100vw - 4rem)"
-        loading="lazy"
-        data-master-image="{{ media | image_url }}"
-        data-master-image-width="{{ media.preview_image.width }}"
-        data-master-image-height="{{ media.preview_image.height }}"
-        data-caption="{{ media.alt }}"
-      {% endif -%}
-    >    
+  <div class="product-media overflow-hidden media-{{ media.media_type }}" data-media-id="{{ media.id }}" style="{{ border_style }}">
+    {%- if media.media_type == 'model' -%}<span class="media-icon"><i class="bi bi-box"></i></span>{%- elsif media.media_type == 'external_video' or media.media_type == 'video' -%}<span class="media-icon"><i class="bi bi-camera-video"></i></span>{%- endif -%}
+    <img srcset="{{ media.preview_image | image_url }}" src="{{ media | image_url }}" alt="{{ media.alt | default: product.title | default: shop.name | escape }}" width="576" height="{{ 576 | divided_by: media.preview_image.aspect_ratio | ceil }}">
   </div>
 {%- else -%}
   {%- case media.media_type -%}
     {%- when 'image' -%}
-      <div
-        class="product-media overflow-hidden media-image h-100"
-        style="{{ border_style }} height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"
-      >
-        {%- if gellery_type == 'grid-2-columns' or gellery_type == 'grid-1-columns' or section.settings.product_gellery == 'combined-grid' -%}
-          <a
-            href="#"
-            class="product-gallery-photoswipe__trigger product-img-btn"
-            data-original-title="Zoom"
-            data-placement="left"
-            aria-label="link"
-          >
-            <span class="bi bi-arrows-fullscreen"></span>
-          </a>
-        {%- endif -%}
-        {%- liquid
-          assign media_loading = 'lazy'
-          if position == 1 or position == '1'
-            assign media_loading = 'eager'
-          endif
-        -%}
-        {%- render 'responsive-image',
-          image: media,
-          zoom_image: true,
-          include_srcset: false,
-          image_width: 1400,
-          loading: media_loading,
-          natural_product_media: true
-        -%}
+      <div class="product-media overflow-hidden media-image h-100" style="{{ border_style }} height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;">
+        {%- render 'responsive-image', image: media, zoom_image: true, include_srcset: false, image_width: 1400, loading: 'lazy', natural_product_media: true -%}
       </div>
     {%- when 'external_video' -%}
-      <div
-        class="product-media overflow-hidden media-video external-video-media"
-        data-media-id="{{ media.id }}"
-        style="width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:{{ media.aspect_ratio | default: 1.777777 }}!important;"
-      >
-        <a
-          href="#"
-          class="product-gallery-photoswipe__trigger product-img-btn product-media-fullscreen-trigger"
-          data-original-title="Fullscreen"
-          data-placement="left"
-          aria-label="View video fullscreen"
-        >
-          <span class="bi bi-arrows-fullscreen"></span>
-        </a>
+      <div class="product-media overflow-hidden media-video external-video-media" data-media-id="{{ media.id }}" style="width:100%!important; height:min(70vw, 300px)!important; min-height:0!important; max-height:300px!important; aspect-ratio:auto!important;">
+        <a href="#" class="product-gallery-photoswipe__trigger product-img-btn product-media-fullscreen-trigger" aria-label="View video fullscreen"><span class="bi bi-arrows-fullscreen"></span></a>
         {%- assign video_id = 'video-' | append: media.id -%}
-        <div
-          class="plyr-external-video"
-          id="{{ video_id }}"
-          style="width:100%!important; height:100%!important; min-height:0!important;"
-        >{{ media | external_video_tag }}</div>
+        <div class="plyr-external-video" id="{{ video_id }}" style="width:100%!important; height:100%!important; min-height:0!important;">{{ media | external_video_tag }}</div>
       </div>
     {%- when 'video' -%}
-      <div
-        class="product-media overflow-hidden media-video local-video"
-        data-media-id="{{ media.id }}"
-        style="position:absolute!important; inset:0!important; width:100%!important; height:100%!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"
-      >
-        <a
-          href="#"
-          class="product-gallery-photoswipe__trigger product-img-btn product-media-fullscreen-trigger"
-          data-original-title="Fullscreen"
-          data-placement="left"
-          aria-label="View video fullscreen"
-        >
-          <span class="bi bi-arrows-fullscreen"></span>
-        </a>
+      <div class="product-media overflow-hidden media-video local-video" data-media-id="{{ media.id }}" style="position:relative!important; inset:auto!important; width:100%!important; height:min(70vw, 300px)!important; min-height:0!important; max-height:300px!important; aspect-ratio:auto!important;">
+        <a href="#" class="product-gallery-photoswipe__trigger product-img-btn product-media-fullscreen-trigger" aria-label="View video fullscreen"><span class="bi bi-arrows-fullscreen"></span></a>
         {%- assign video_id = 'video-' | append: media.id -%}
-        {%- capture tvastra_video_markup -%}
-          {{
-            media
-            | video_tag:
-              controls: false,
-              autoplay: true,
-              preload: 'auto',
-              loop: true,
-              muted: true,
-              playsinline: true,
-              image_size: '535x',
-              class: 'no-control',
-              id: video_id
-          }}
-        {%- endcapture -%}
-        {{ tvastra_video_markup | replace: '<video', '<video style="display:block!important; width:100%!important; height:100%!important; max-width:100%!important; max-height:100%!important; object-fit:contain!important; object-position:center center!important;"' }}
+        {{ media | video_tag: controls: false, autoplay: true, preload: 'auto', loop: true, muted: true, playsinline: true, image_size: '535x', class: 'no-control', id: video_id }}
         <style>
-          .main-product-page .product-gallery .product-main-slider .product-image-main .swiper-slide:has(.local-video) {
-            position: relative !important;
-            align-self: stretch !important;
-            height: auto !important;
-            min-height: 0 !important;
-            max-height: none !important;
-          }
-
-          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video {
-            position: absolute !important;
-            inset: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            min-height: 0 !important;
-            max-width: 100% !important;
-            max-height: none !important;
-            aspect-ratio: auto !important;
-          }
-
-          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video > .plyr,
-          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video .plyr__video-wrapper {
-            width: 100% !important;
-            height: 100% !important;
-            min-height: 0 !important;
-            max-width: 100% !important;
-            max-height: none !important;
-          }
-
-          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video video {
-            display: block !important;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: 100% !important;
-            max-height: 100% !important;
-            object-fit: contain !important;
-            object-position: center center !important;
-          }
+          .main-product-page .product-gallery .product-main-slider .product-image-main .swiper-slide:has(.local-video),.main-product-page .product-gallery .product-main-slider .product-image-main .swiper-slide:has(.external-video-media){position:relative!important;align-self:flex-start!important;height:auto!important;min-height:0!important;max-height:none!important}
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video,.main-product-page .product-gallery .product-main-slider .product-image-main .external-video-media{position:relative!important;inset:auto!important;width:100%!important;height:min(70vw,300px)!important;min-height:0!important;max-width:100%!important;max-height:300px!important;aspect-ratio:auto!important}
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video>video{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important}
+          .main-product-page .product-gallery .product-main-slider .product-image-main .external-video-media iframe{width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important}
+          @media(min-width:768px){.main-product-page .product-gallery .product-main-slider .product-image-main .local-video,.main-product-page .product-gallery .product-main-slider .product-image-main .external-video-media{height:auto!important;max-height:none!important;aspect-ratio:auto!important}}
         </style>
       </div>
     {%- when 'model' -%}
-      <div class="product-media overflow-hidden media-model" data-media-id="{{ media.id }}">
-        <div class="shopify-model-viewer-ui">
-          {{ media | media_tag: toggleable: true }}
-        </div>
-      </div>
+      <div class="product-media overflow-hidden media-model" data-media-id="{{ media.id }}"><div class="shopify-model-viewer-ui">{{ media | media_tag: toggleable: true }}</div></div>
     {%- else -%}
-      <div class="product-media media-fall-back h-100" data-media-id="{{ media.id }}">
-        {{ media | media_tag }}
-      </div>
+      <div class="product-media media-fall-back h-100" data-media-id="{{ media.id }}">{{ media | media_tag }}</div>
   {%- endcase -%}
 {%- endif -%}
