@@ -316,6 +316,6 @@
 .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .preview-image,
 .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .product-frame-image,
 .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image img {
-  transform: scale(.975) !important;
+  transform: scale(.95) !important;
   transform-origin: center center !important;
 }
