@@ -311,28 +311,41 @@
   aspect-ratio: auto !important;
 }
 
-/* Mobile composition: compact the gallery viewport while keeping the product photo at ~74% of the screen.
-   Container is ~82% wide; the photo uses ~90% of that container = ~74% overall. */
+/* Mobile composition: the outer gallery is exactly the same width as the visual product media.
+   Both images and carousel videos fill this same compact viewport, so the container does not stay oversized. */
 @media (max-width: 767px) {
   .main-product-page .product-gallery .product-main-slider {
-    width: 82% !important;
+    width: 74% !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
 
-  .main-product-page .product-gallery .product-main-slider .product-image-main {
+  .main-product-page .product-gallery .product-main-slider .product-image-main,
+  .main-product-page .product-gallery .product-main-slider .product-image-main > .swiper-wrapper,
+  .main-product-page .product-gallery .product-main-slider .product-image-main > .swiper-wrapper > .swiper-slide,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.local-video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main image-srcset.res-image {
     width: 100% !important;
   }
 
-  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .preview-image,
-  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .product-frame-image,
-  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image img {
-    width: 90% !important;
-    max-width: 90% !important;
+  .main-product-page .product-gallery .product-main-slider .product-image-main .preview-image,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-frame-image,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image img,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .local-video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video video,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .media-video iframe,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .plyr,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .plyr__video-wrapper,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .plyr-external-video {
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     margin-left: auto !important;
     margin-right: auto !important;
     transform: none !important;
-    transform-origin: center center !important;
   }
 }
