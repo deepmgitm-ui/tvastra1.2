@@ -99,7 +99,7 @@
       <div
         class="product-media overflow-hidden media-video local-video"
         data-media-id="{{ media.id }}"
-        style="width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:{{ media.aspect_ratio | default: 0.5625 }}!important;"
+        style="position:absolute!important; inset:0!important; width:100%!important; height:100%!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"
       >
         <a
           href="#"
@@ -128,18 +128,32 @@
         {%- endcapture -%}
         {{ tvastra_video_markup | replace: '<video', '<video style="display:block!important; width:100%!important; height:100%!important; max-width:100%!important; max-height:100%!important; object-fit:contain!important; object-position:center center!important;"' }}
         <style>
-          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video,
-          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video > .plyr,
-          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video .plyr__video-wrapper {
+          .main-product-page .product-gallery .product-main-slider .product-image-main .swiper-slide:has(.local-video) {
+            position: relative !important;
+            align-self: stretch !important;
+            height: auto !important;
+            min-height: 0 !important;
+            max-height: none !important;
+          }
+
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video {
+            position: absolute !important;
+            inset: 0 !important;
             width: 100% !important;
+            height: 100% !important;
             min-height: 0 !important;
             max-width: 100% !important;
             max-height: none !important;
+            aspect-ratio: auto !important;
           }
 
           .main-product-page .product-gallery .product-main-slider .product-image-main .local-video > .plyr,
           .main-product-page .product-gallery .product-main-slider .product-image-main .local-video .plyr__video-wrapper {
+            width: 100% !important;
             height: 100% !important;
+            min-height: 0 !important;
+            max-width: 100% !important;
+            max-height: none !important;
           }
 
           .main-product-page .product-gallery .product-main-slider .product-image-main .local-video video {
