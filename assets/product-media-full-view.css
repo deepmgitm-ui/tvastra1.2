@@ -349,3 +349,28 @@
     transform: none !important;
   }
 }
+
+
+/* Tvastra mobile fold: keep the current media size, but pull the product information upward so Colour is visible in the initial viewport. */
+@media (max-width: 767px) {
+  .main-product-page {
+    padding-top: 8px !important;
+  }
+
+  .main-product-page .product-gallery {
+    margin-bottom: -24px !important;
+  }
+
+  .main-product-page .product-gallery .product-thumb-wrap {
+    margin-top: 2px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .main-product-page .product-summary {
+    margin-top: 0 !important;
+  }
+
+  .main-product-page .product-summary > .position-sticky {
+    padding-top: 0 !important;
+  }
+}
