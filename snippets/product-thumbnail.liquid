@@ -74,7 +74,11 @@
         -%}
       </div>
     {%- when 'external_video' -%}
-      <div class="product-media overflow-hidden media-video" data-media-id="{{ media.id }}">
+      <div
+        class="product-media overflow-hidden media-video external-video-media"
+        data-media-id="{{ media.id }}"
+        style="width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:{{ media.aspect_ratio | default: 1.777777 }}!important;"
+      >
         <a
           href="#"
           class="product-gallery-photoswipe__trigger product-img-btn product-media-fullscreen-trigger"
@@ -85,10 +89,18 @@
           <span class="bi bi-arrows-fullscreen"></span>
         </a>
         {%- assign video_id = 'video-' | append: media.id -%}
-        <div class="plyr-external-video" id="{{ video_id }}">{{ media | external_video_tag }}</div>
+        <div
+          class="plyr-external-video"
+          id="{{ video_id }}"
+          style="width:100%!important; height:100%!important; min-height:0!important;"
+        >{{ media | external_video_tag }}</div>
       </div>
     {%- when 'video' -%}
-      <div class="product-media overflow-hidden media-video local-video" data-media-id="{{ media.id }}">
+      <div
+        class="product-media overflow-hidden media-video local-video"
+        data-media-id="{{ media.id }}"
+        style="width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:{{ media.aspect_ratio | default: 0.5625 }}!important;"
+      >
         <a
           href="#"
           class="product-gallery-photoswipe__trigger product-img-btn product-media-fullscreen-trigger"
@@ -99,19 +111,47 @@
           <span class="bi bi-arrows-fullscreen"></span>
         </a>
         {%- assign video_id = 'video-' | append: media.id -%}
-        {{
-          media
-          | video_tag:
-            controls: false,
-            autoplay: true,
-            preload: 'auto',
-            loop: true,
-            muted: true,
-            playsinline: true,
-            image_size: '535x',
-            class: 'no-control',
-            id: video_id
-        }}
+        {%- capture tvastra_video_markup -%}
+          {{
+            media
+            | video_tag:
+              controls: false,
+              autoplay: true,
+              preload: 'auto',
+              loop: true,
+              muted: true,
+              playsinline: true,
+              image_size: '535x',
+              class: 'no-control',
+              id: video_id
+          }}
+        {%- endcapture -%}
+        {{ tvastra_video_markup | replace: '<video', '<video style="display:block!important; width:100%!important; height:100%!important; max-width:100%!important; max-height:100%!important; object-fit:contain!important; object-position:center center!important;"' }}
+        <style>
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video,
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video > .plyr,
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video .plyr__video-wrapper {
+            width: 100% !important;
+            min-height: 0 !important;
+            max-width: 100% !important;
+            max-height: none !important;
+          }
+
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video > .plyr,
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video .plyr__video-wrapper {
+            height: 100% !important;
+          }
+
+          .main-product-page .product-gallery .product-main-slider .product-image-main .local-video video {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain !important;
+            object-position: center center !important;
+          }
+        </style>
       </div>
     {%- when 'model' -%}
       <div class="product-media overflow-hidden media-model" data-media-id="{{ media.id }}">
