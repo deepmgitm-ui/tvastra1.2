@@ -311,14 +311,24 @@
   aspect-ratio: auto !important;
 }
 
-/* Mobile composition: reserve ~20% visual width for the floating video and ~74% for the product photo.
-   The gallery/container itself stays full-width; only the photo is visually reduced and centered. */
+/* Mobile composition: compact the gallery viewport while keeping the product photo at ~74% of the screen.
+   Container is ~82% wide; the photo uses ~90% of that container = ~74% overall. */
 @media (max-width: 767px) {
+  .main-product-page .product-gallery .product-main-slider {
+    width: 82% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .main-product-page .product-gallery .product-main-slider .product-image-main {
+    width: 100% !important;
+  }
+
   .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .preview-image,
   .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .product-frame-image,
   .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image img {
-    width: 74% !important;
-    max-width: 74% !important;
+    width: 90% !important;
+    max-width: 90% !important;
     height: auto !important;
     margin-left: auto !important;
     margin-right: auto !important;
