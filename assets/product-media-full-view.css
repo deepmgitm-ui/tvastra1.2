@@ -311,11 +311,18 @@
   aspect-ratio: auto !important;
 }
 
-/* SUBTLE PRODUCT IMAGE SCALE: keep the gallery/container dimensions unchanged,
-   but make the actual product photo slightly smaller and centered. */
-.main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .preview-image,
-.main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .product-frame-image,
-.main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image img {
-  transform: scale(.92) !important;
-  transform-origin: center center !important;
+/* Mobile composition: reserve ~20% visual width for the floating video and ~74% for the product photo.
+   The gallery/container itself stays full-width; only the photo is visually reduced and centered. */
+@media (max-width: 767px) {
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .preview-image,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image .product-frame-image,
+  .main-product-page .product-gallery .product-main-slider .product-image-main .product-media.media-image img {
+    width: 74% !important;
+    max-width: 74% !important;
+    height: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    transform: none !important;
+    transform-origin: center center !important;
+  }
 }
