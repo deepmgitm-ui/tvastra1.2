@@ -43,91 +43,36 @@
 {%- else -%}
   {%- case media.media_type -%}
     {%- when 'image' -%}
-      {%- liquid
-        assign tvastra_product_page_video = product.metafields.custom.product_page_video.value
-        assign tvastra_product_page_target_media = product.selected_or_first_available_variant.featured_media
-        if tvastra_product_page_target_media == blank
-          assign tvastra_product_page_target_media = product.featured_media
-        endif
-        assign tvastra_product_page_video_active = false
-        if tvastra_product_page_video != blank and tvastra_product_page_target_media != blank and media.id == tvastra_product_page_target_media.id
-          assign tvastra_product_page_video_active = true
-        endif
-      -%}
       <div
         class="product-media overflow-hidden media-image h-100"
         style="{{ border_style }} height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"
       >
-        {%- unless tvastra_product_page_video_active -%}
-          {%- if gellery_type == 'grid-2-columns' or gellery_type == 'grid-1-columns' or section.settings.product_gellery == 'combined-grid' -%}
-            <a
-              href="#"
-              class="product-gallery-photoswipe__trigger product-img-btn"
-              data-original-title="Zoom"
-              data-placement="left"
-              aria-label="link"
-            >
-              <span class="bi bi-arrows-fullscreen"></span>
-            </a>
-          {%- endif -%}
-        {%- endunless -%}
-
+        {%- if gellery_type == 'grid-2-columns' or gellery_type == 'grid-1-columns' or section.settings.product_gellery == 'combined-grid' -%}
+          <a
+            href="#"
+            class="product-gallery-photoswipe__trigger product-img-btn"
+            data-original-title="Zoom"
+            data-placement="left"
+            aria-label="link"
+          >
+            <span class="bi bi-arrows-fullscreen"></span>
+          </a>
+        {%- endif -%}
         {%- liquid
           assign media_loading = 'lazy'
           if position == 1 or position == '1'
             assign media_loading = 'eager'
           endif
         -%}
-
-        {%- if tvastra_product_page_video_active -%}
-          {%- assign tvastra_product_page_video_id = 'product-page-video-' | append: product.id -%}
-          <div
-            class="tvastra-product-page-video"
-            data-media-id="tvastra-product-page-video-{{ product.id }}"
-            data-product-page-video="true"
-            style="{{ border_style }} position:relative; width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important; overflow:hidden;"
-          >
-            {{
-              tvastra_product_page_video
-              | video_tag:
-                controls: false,
-                autoplay: true,
-                preload: 'metadata',
-                loop: true,
-                muted: true,
-                playsinline: true,
-                image_size: '1400x',
-                class: 'no-control',
-                id: tvastra_product_page_video_id
-            }}
-          </div>
-        {%- else -%}
-          {%- render 'responsive-image',
-            image: media,
-            zoom_image: true,
-            include_srcset: false,
-            image_width: 1400,
-            loading: media_loading,
-            natural_product_media: true
-          -%}
-        {%- endif -%}
+        {%- render 'responsive-image',
+          image: media,
+          zoom_image: true,
+          include_srcset: false,
+          image_width: 1400,
+          loading: media_loading,
+          natural_product_media: true
+        -%}
       </div>
-      {%- if tvastra_product_page_video_active -%}
-        <style>
-          .main-product-page .product-gallery .product-main-slider .product-image-main .swiper-slide .tvastra-product-page-video,
-          .main-product-page .product-gallery .product-main-slider .product-image-main .swiper-slide .tvastra-product-page-video video {
-            display: block !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            height: auto !important;
-            min-height: 0 !important;
-            max-height: none !important;
-            aspect-ratio: auto !important;
-            object-fit: contain !important;
-            object-position: center center !important;
-          }
-        </style>
-      {%- endif -%}
     {%- when 'external_video' -%}
       <div
         class="product-media overflow-hidden media-video external-video-media"
