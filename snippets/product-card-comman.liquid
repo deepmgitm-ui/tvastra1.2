@@ -33,6 +33,7 @@
   assign _hex = product_card_product.metafields.custom.swatch_color.value
   assign _name = product_card_product.metafields.custom.swatch_name.value
   assign _siblings = product_card_product.metafields.custom.sibling_products.value
+  assign tvastra_product_page_video = product_card_product.metafields.custom.product_page_video.value
 
   assign has_custom_swatches = false
   if _hex != blank or _siblings != blank
@@ -46,23 +47,75 @@
             <div class="swiper-wrapper">
               {%- for media in product_card_product.media -%}
                 <div class="swiper-slide" data-meida-img-id="{{ media.id }}" image-index="{{ forloop.index }}">
-                    <a href="{{ product_card_product.url }}" style="{{ style | strip | strip_newlines }} " aria-label="link"> 
-                      {%- case media.media_type -%}
-                        {% when 'image' %}    
-                          {%- render 'responsive-image', image: media, placeholder_type: 'product-image', image_ratio: settings.product_image_ratio -%}
-                      {%- endcase -%}
+                    <a href="{{ product_card_product.url }}" style="{{ style | strip | strip_newlines }} " aria-label="link">
+                      {%- if forloop.first and tvastra_product_page_video != blank -%}
+                        <div
+                          class="tvastra-product-card-video"
+                          style="position:relative; width:100%; aspect-ratio:{{ product_card_product.featured_media.preview_image.aspect_ratio | default: 1 }}; overflow:hidden;"
+                        >
+                          {{
+                            tvastra_product_page_video
+                            | video_tag:
+                              controls: false,
+                              autoplay: true,
+                              preload: 'metadata',
+                              loop: true,
+                              muted: true,
+                              playsinline: true,
+                              class: 'tvastra-product-card-video__media'
+                          }}
+                        </div>
+                      {%- else -%}
+                        {%- case media.media_type -%}
+                          {% when 'image' %}
+                            {%- render 'responsive-image', image: media, placeholder_type: 'product-image', image_ratio: settings.product_image_ratio -%}
+                        {%- endcase -%}
+                      {%- endif -%}
                     </a>
                 </div> 
               {%- endfor -%}  
             </div>
           </div> 
-        {%- else -%}  
+        {%- else -%}
           <a href="{{ product_card_product.url | default: '#' | within: collection }}" class="d-block" aria-label="product">
-            {%- if product_card_product.media -%}
+            {%- if tvastra_product_page_video != blank -%}
+              <div
+                class="tvastra-product-card-video"
+                style="position:relative; width:100%; aspect-ratio:{{ product_card_product.featured_media.preview_image.aspect_ratio | default: 1 }}; overflow:hidden;"
+              >
+                {{
+                  tvastra_product_page_video
+                  | video_tag:
+                    controls: false,
+                    autoplay: true,
+                    preload: 'metadata',
+                    loop: true,
+                    muted: true,
+                    playsinline: true,
+                    class: 'tvastra-product-card-video__media'
+                }}
+              </div>
+            {%- elsif product_card_product.media -%}
               {%- render 'responsive-image', media: product_card_product.media, type: 'product', placeholder_type: 'product-image', image_ratio: settings.product_image_ratio, show_secondary_image: show_secondary_image -%}
             {%- endif -%}
           </a>
         {%- endif -%}
+
+        <style>
+          .tvastra-product-card-video {
+            background: transparent;
+          }
+
+          .tvastra-product-card-video__media {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: cover !important;
+            object-position: center center !important;
+          }
+        </style>
         {%- render 'product-badge', product_for_badge: product_card_product -%}
         {%- unless product_card_style == 'shop-metro'-%}
           <div class="product-buttons-wrap alt-font">
