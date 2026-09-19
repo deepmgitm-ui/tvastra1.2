@@ -43,20 +43,23 @@
 {%- else -%}
   {%- case media.media_type -%}
     {%- when 'image' -%}
+      {%- assign tvastra_product_page_video = product.metafields.custom.product_page_video.value -%}
       <div
         class="product-media overflow-hidden media-image h-100"
         style="{{ border_style }} height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"
       >
-        {%- if gellery_type == 'grid-2-columns' or gellery_type == 'grid-1-columns' or section.settings.product_gellery == 'combined-grid' -%}
-          <a
-            href="#"
-            class="product-gallery-photoswipe__trigger product-img-btn"
-            data-original-title="Zoom"
-            data-placement="left"
-            aria-label="link"
-          >
-            <span class="bi bi-arrows-fullscreen"></span>
-          </a>
+        {%- if position != 1 or tvastra_product_page_video == blank -%}
+          {%- if gellery_type == 'grid-2-columns' or gellery_type == 'grid-1-columns' or section.settings.product_gellery == 'combined-grid' -%}
+            <a
+              href="#"
+              class="product-gallery-photoswipe__trigger product-img-btn"
+              data-original-title="Zoom"
+              data-placement="left"
+              aria-label="link"
+            >
+              <span class="bi bi-arrows-fullscreen"></span>
+            </a>
+          {%- endif -%}
         {%- endif -%}
         {%- liquid
           assign media_loading = 'lazy'
@@ -64,7 +67,6 @@
             assign media_loading = 'eager'
           endif
         -%}
-{%- assign tvastra_product_page_video = product.metafields.custom.product_page_video.value -%}
         {%- if position == 1 and tvastra_product_page_video != blank -%}
           {%- assign tvastra_product_page_video_id = 'product-page-video-' | append: product.id -%}
           <div
@@ -93,14 +95,14 @@
             }}
           </div>
         {%- else -%}
-                  {%- render 'responsive-image',
-          image: media,
-          zoom_image: true,
-          include_srcset: false,
-          image_width: 1400,
-          loading: media_loading,
-          natural_product_media: true
-        -%}
+          {%- render 'responsive-image',
+            image: media,
+            zoom_image: true,
+            include_srcset: false,
+            image_width: 1400,
+            loading: media_loading,
+            natural_product_media: true
+          -%}
         {%- endif -%}
       </div>
     {%- when 'external_video' -%}
