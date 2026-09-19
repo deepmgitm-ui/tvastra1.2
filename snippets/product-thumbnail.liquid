@@ -64,7 +64,36 @@
             assign media_loading = 'eager'
           endif
         -%}
-        {%- render 'responsive-image',
+{%- assign tvastra_product_page_video = product.metafields.custom.product_page_video.value -%}
+        {%- if position == 1 and tvastra_product_page_video != blank -%}
+          {%- assign tvastra_product_page_video_id = 'product-page-video-' | append: product.id -%}
+          <div
+            class="product-media overflow-hidden media-video local-video tvastra-product-page-video"
+            data-media-id="tvastra-product-page-video-{{ product.id }}"
+            style="{{ border_style }} width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; aspect-ratio:auto!important;"
+          >
+            {%- capture tvastra_product_page_video_markup -%}
+              {{
+                tvastra_product_page_video
+                | video_tag:
+                  controls: false,
+                  autoplay: true,
+                  preload: 'auto',
+                  loop: true,
+                  muted: true,
+                  playsinline: true,
+                  image_size: '1400x',
+                  class: 'no-control',
+                  id: tvastra_product_page_video_id
+              }}
+            {%- endcapture -%}
+            {{
+              tvastra_product_page_video_markup
+              | replace: '<video', '<video style="display:block!important; width:100%!important; height:auto!important; max-width:100%!important; max-height:none!important; object-fit:contain!important; object-position:center center!important;"'
+            }}
+          </div>
+        {%- else -%}
+                  {%- render 'responsive-image',
           image: media,
           zoom_image: true,
           include_srcset: false,
@@ -72,6 +101,7 @@
           loading: media_loading,
           natural_product_media: true
         -%}
+        {%- endif -%}
       </div>
     {%- when 'external_video' -%}
       <div
