@@ -23,7 +23,7 @@
           <div class="desktop-video-wrapper w-100 h-100">
             {%- if section.settings.locale_video_url != blank -%}
               <div class="video-hero locale-video h-100">
-                {{ section.settings.locale_video_url | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: '1920x', class: 'w-100 h-100 custom-object-fit' }}
+                {{ section.settings.locale_video_url | video_tag: autoplay: false, loop: true, muted: true, controls: false, loading: 'eager', preload: 'none', image_size: '1920x', class: 'w-100 h-100 custom-object-fit tvastra-hero-video' }}
               </div>
             {%- else -%}
               <div class="video-hero youtube-vimeo-video h-100">
@@ -47,7 +47,7 @@
 
             {%- if mobile_local != blank -%}
               <div class="video-hero locale-video h-100">
-                {{ mobile_local | video_tag: autoplay: true, loop: true, muted: true, controls: false, image_size: '1080x1080', class: 'w-100 h-100 custom-object-fit' }}
+                {{ mobile_local | video_tag: autoplay: false, loop: true, muted: true, controls: false, loading: 'eager', preload: 'none', image_size: '1080x1080', class: 'w-100 h-100 custom-object-fit tvastra-hero-video' }}
               </div>
             {%- else -%}
               <div class="video-hero youtube-vimeo-video h-100">
@@ -105,6 +105,39 @@
     </div>
   </div>
 </section>
+
+<script>
+  (function () {
+    function startTvastraHeroVideo() {
+      var mobile = window.matchMedia('(max-width: 767px)').matches;
+      var selector = mobile ? '.mobile-video-wrapper video.tvastra-hero-video' : '.desktop-video-wrapper video.tvastra-hero-video';
+      var videos = document.querySelectorAll('.video-hero-section .tvastra-hero-video');
+      if (!videos.length) return;
+      videos.forEach(function (video) {
+        if (video.matches(selector)) {
+          video.play().catch(function () {});
+        } else {
+          video.pause();
+        }
+      });
+    }
+
+    function scheduleHeroVideo() {
+      var run = function () { startTvastraHeroVideo(); };
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(run, { timeout: 1800 });
+      } else {
+        window.setTimeout(run, 900);
+      }
+    }
+
+    if (document.readyState === 'complete') {
+      scheduleHeroVideo();
+    } else {
+      window.addEventListener('load', scheduleHeroVideo, { once: true, passive: true });
+    }
+  })();
+</script>
 
 <style>  
   .desktop-video-wrapper { display: block; }
