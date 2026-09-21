@@ -3,6 +3,9 @@
   class="video-hero-section section-{{ section.id }} {% if section.settings.section_show == false %}d-none{% endif %} {{ section.settings.section_class_name }} {{ section.settings.padding_top }} {{ section.settings.padding_bottom }} d-md-block"
   style="{% if section.settings.section_bg_color != blank %}background-color: {{ section.settings.section_bg_color }};{% endif %}"
 >
+  {%- if request.page_type == 'index' -%}
+    <h1 class="visually-hidden">Tvastra Fit | Premium Activewear &amp; Gym Wear for Men &amp; Women</h1>
+  {%- endif -%}
   {%- if section.settings.rotate_image != blank -%}
     <div class="container position-relative">
       <div class="video-rotate-image position-absolute rotate-animation {% if section.settings.show_rotate_animation == true %}rotation-image{% endif %}" style="top: -{{ section.settings.rotate_image_top }}px; right: {{ section.settings.rotate_image_right }}%;z-index: 99;">
