@@ -5,7 +5,7 @@
       <div class="meta">
         <label>{{ 'general.product_information.category' | t }}</label>
         {% for collection in product.collections -%}
-          <a href="/collections/{{ collection.title | handle }}" aria-label="product">{{ collection.title }}</a>{%- if forloop.last != true %}, {% endif -%}
+          <a href="{{ collection.url }}" aria-label="View {{ collection.title | escape }} collection">{{ collection.title }}</a>{%- if forloop.last != true %}, {% endif -%}
         {%- endfor -%}
       </div>
       {%- endif -%}
