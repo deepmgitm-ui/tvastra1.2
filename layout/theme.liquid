@@ -116,6 +116,9 @@
       {%- section 'mini-header' -%}
         {%- render 'header' -%}
       <main id="MainContent" class="content-for-layout focus-none {% if template == 'product' %}product-page{% endif %}" role="main" tabindex="-1">
+        {%- if request.page_type == 'index' -%}
+          <h1 class="visually-hidden">Tvastra Fit | Premium Activewear &amp; Gym Wear for Men &amp; Women</h1>
+        {%- endif -%}
         {{ content_for_layout }}
       </main>
       {%- liquid
