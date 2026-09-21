@@ -47,10 +47,17 @@
       <div class="swiper-wrapper">
         {%- for block in section.blocks -%}
           {%- assign item = block.settings -%}
-          {%- assign lazy = 'lazy' -%}
-          {% if forloop.index == 1 %}
-            {%- assign lazy = '' -%}
-          {% endif %}
+          {%- assign hero_loading = 'lazy' -%}
+          {%- assign hero_priority = 'auto' -%}
+          {%- assign hero_preload = false -%}
+          {%- if forloop.first -%}
+            {%- assign hero_loading = 'eager' -%}
+            {%- assign hero_priority = 'high' -%}
+            {%- if block.settings.mobile_image == blank -%}
+              {%- assign hero_preload = true -%}
+            {%- endif -%}
+          {%- endif -%}
+          {%- assign hero_alt = block.settings.image.alt | default: block.settings.title | default: block.settings.subtitle | default: 'Tvastra Fit activewear' -%}
           <div class="swiper-slide overflow-hidden">
             {%- if block.settings.mobile_image != blank -%}
               {%- assign mobile_image = block.settings.mobile_image -%}
@@ -60,14 +67,14 @@
             <div {% if section.settings.show_parallax == true -%} data-swiper-parallax="800" class="d-block h-100"{% endif %}>
               {%- if block.settings.image != blank -%}
                 <div class="desktop-img d-none d-md-block">
-                  {{ block.settings.image | image_url: width: 3840 | image_tag: height: block.settings.image.height, sizes: "100vw", widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840', loading: lazy }}
+                  {{ block.settings.image | image_url: width: 2400 | image_tag: height: block.settings.image.height, sizes: "100vw", widths: '375, 550, 750, 1100, 1500, 1780, 2000, 2400', loading: hero_loading, fetchpriority: hero_priority, preload: hero_preload, alt: hero_alt }}
                 </div>
               {%- else -%}
                 {{ 'lifestyle-1' | placeholder_svg_tag: 'svg-placeholder' }}
               {%- endif -%}
               {%- if mobile_image != blank -%}
                 <div class="mobile-img d-block d-md-none">
-                  {{ mobile_image | image_url: width: 3840 | image_tag: height: mobile_image.height, sizes: "100vw", widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840', loading: lazy }}
+                  {{ mobile_image | image_url: width: 2400 | image_tag: height: mobile_image.height, sizes: "100vw", widths: '375, 550, 750, 1100, 1500, 1780, 2000, 2400', loading: hero_loading, fetchpriority: hero_priority, preload: false, alt: hero_alt }}
                 </div>
               {%- endif -%}
             </div>
