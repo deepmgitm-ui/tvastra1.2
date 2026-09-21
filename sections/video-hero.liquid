@@ -23,7 +23,7 @@
           <div class="desktop-video-wrapper w-100 h-100">
             {%- if section.settings.locale_video_url != blank -%}
               <div class="video-hero locale-video h-100">
-                {{ section.settings.locale_video_url | video_tag: autoplay: false, loop: true, muted: true, controls: false, loading: 'eager', preload: 'none', image_size: '1920x', class: 'w-100 h-100 custom-object-fit tvastra-hero-video' }}
+                {{ section.settings.locale_video_url | video_tag: autoplay: false, loop: true, muted: true, controls: false, loading: 'lazy', preload: 'none', image_size: '1920x', class: 'w-100 h-100 custom-object-fit tvastra-hero-video' }}
               </div>
             {%- else -%}
               <div class="video-hero youtube-vimeo-video h-100">
