@@ -25,8 +25,8 @@
       <span class="media-icon"><i class="bi bi-camera-video"></i></span>
     {%- endif -%}
     <img
-      srcset="{{ media.preview_image | image_url }}"
-      src="{{ media | image_url }}"
+      srcset="{{ media.preview_image | image_url: width: 140 }} 140w"
+      src="{{ media.preview_image | image_url: width: 140 }}"
       alt="{{ media.alt | default: product.title | default: shop.name | escape }}"
       width="576"
       height="{{ 576 | divided_by: media.preview_image.aspect_ratio | ceil }}"        
@@ -93,7 +93,7 @@
           class="plyr-external-video"
           id="{{ video_id }}"
           style="width:100%!important; height:100%!important; min-height:0!important;"
-        >{{ media | external_video_tag }}</div>
+        >{{ media | external_video_tag | replace: '<iframe', '<iframe loading="lazy"' }}</div>
       </div>
     {%- when 'video' -%}
       <div
@@ -116,8 +116,9 @@
             media
             | video_tag:
               controls: false,
-              autoplay: true,
-              preload: 'auto',
+              autoplay: false,
+              loading: 'lazy',
+              preload: 'none',
               loop: true,
               muted: true,
               playsinline: true,
