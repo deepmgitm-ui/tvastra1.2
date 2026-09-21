@@ -48,7 +48,7 @@
       {{ settings.social_vimeo_link | json }}
     {%- endif -%}
   ],
-  "url": {{ shop.url | append: page.url | json }}
+  "url": {{ shop.url | json }}
 }
 </script>
 {%- if request.page_type == 'index' -%}
