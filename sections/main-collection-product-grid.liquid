@@ -4,16 +4,17 @@
 {%- assign is_men_collection = false -%}
 {%- if collection.handle == 'men' -%}
   {%- assign is_men_collection = true -%}
-  {%- if collection.sort_by == 'most-relevant' -%}
-    <script>
-      (function () {
-        var params = new URLSearchParams(window.location.search);
-        if (params.get('sort_by') === 'most-relevant') {
-          params.set('sort_by', 'manual');
-          window.location.replace(window.location.pathname + '?' + params.toString());
-        }
-      })();
-    </script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var sortBy = params.get('sort_by');
+      if (!sortBy || sortBy === 'most-relevant' || sortBy === 'relevance') {
+        params.set('sort_by', 'manual');
+        window.location.replace(window.location.pathname + '?' + params.toString());
+      }
+    })();
+  </script>
+  {%- if collection.sort_by == 'most-relevant' or collection.sort_by == 'relevance' or collection.sort_by == blank -%}
     {%- assign current_sort_by = 'manual' -%}
   {%- endif -%}
 {%- endif -%}
