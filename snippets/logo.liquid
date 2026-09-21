@@ -2,7 +2,7 @@
   {%- if settings.logo != blank -%}
     <img
       src="{{ settings.logo | image_url: width: 480 }}"
-      alt="{{ settings.logo.alt }}"
+      alt="{{ settings.logo.alt | default: shop.name | escape }}"
       width="{{ settings.logo.width }}"
       height="{{ settings.logo.height }}"
       class="default-logo"
@@ -13,7 +13,7 @@
     {%- if settings.logo_transparent != blank and settings.transparent_header != false -%}
       <img
       src="{{ settings.logo_transparent | image_url: width: 480 }}"
-      alt="{{ settings.logo_transparent.alt }}"
+      alt="{{ settings.logo_transparent.alt | default: shop.name | escape }}"
       width="{{ settings.logo_transparent.width }}"
       height="{{ settings.logo_transparent.height }}"
       loading="eager"
@@ -34,6 +34,6 @@
       >
     {%- endif -%}            
   {%- else -%}
-    <h1 class="logo-text">{{ settings.logo_text }}</h1>
+    <span class="logo-text">{{ settings.logo_text }}</span>
   {%- endif -%}          
 </a>

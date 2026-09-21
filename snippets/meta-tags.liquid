@@ -94,6 +94,8 @@
 {%- endif -%}
 {%- if should_noindex -%}
   <meta name="robots" content="noindex,follow">
+{%- else -%}
+  <meta name="robots" content="index,follow">
 {%- endif -%}
 
 {%- if request.page_type == 'product' -%}

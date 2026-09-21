@@ -72,12 +72,11 @@
   function prepareLocalVideo(video) {
     video.muted = true;
     video.defaultMuted = true;
-    video.autoplay = true;
+    video.autoplay = false;
     video.loop = true;
     video.playsInline = true;
-    video.preload = 'auto';
+    video.preload = 'none';
     video.setAttribute('muted', '');
-    video.setAttribute('autoplay', '');
     video.setAttribute('loop', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
@@ -88,9 +87,12 @@
 
     if (!shouldPlay) {
       try { video.pause(); } catch (error) {}
+      video.preload = 'none';
+      video.removeAttribute('autoplay');
       return;
     }
 
+    video.preload = 'metadata';
     var promise;
     try { promise = video.play(); } catch (error) { return; }
     if (promise && typeof promise.catch === 'function') promise.catch(function () {});
