@@ -11,18 +11,15 @@
     <link rel="canonical" href="{{ canonical_url }}">
     <link rel="dns-prefetch" href="https://cdn.shopify.com" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.shopifycdn.com" crossorigin>
-    <link rel="dns-prefetch" href="https://fonts.google.com" crossorigin>
     <link rel="dns-prefetch" href="https://review-images.judge.me" crossorigin>
     <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
     <link rel="preconnect" href="https://review-images.judge.me" crossorigin>
     {%- render 'seo-title' -%}
     {%- render 'meta-tags' -%} 
-    <link rel="preload" as="style" href="{{ 'base.min.css' | asset_url }}">
     <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
 
     {{ content_for_header }}
     {%- unless settings.use_body_google_font == true or settings.alt_google_fonts == true -%}
-      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
     {%- if settings.use_body_google_font == true or settings.alt_google_fonts == true -%}
       <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,8 +69,8 @@
         {{ 'promotion-style-2.min.css' | asset_url | stylesheet_tag }}
       {%- endif -%}
     {%- endif -%}
-    {{ 'base.min.css' | asset_url | stylesheet_tag }}
-    {%- if settings.header_layout == 'style-2' -%}
+    {{ 'base.min.css' | asset_url | stylesheet_tag: preload: true }}
+    {%- if settings.header_layout == 'style-2' -%
       {{ 'header-style-2.min.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
     {{ 'responsive.min.css' | asset_url | stylesheet_tag }}
