@@ -46,16 +46,6 @@
               <i class="bi bi-arrow-up-right cm-channel__arrow" aria-hidden="true"></i>
             </a>
           {%- endif -%}
-          {%- if s.whatsapp_url != blank -%}
-            <a class="cm-channel" href="{{ s.whatsapp_url }}" target="_blank" rel="noopener">
-              <span class="cm-channel__icon" aria-hidden="true"><i class="bi bi-whatsapp"></i></span>
-              <span class="cm-channel__content">
-                <span class="cm-channel__label">WhatsApp</span>
-                <span class="cm-channel__value">{{ s.whatsapp_label }}</span>
-              </span>
-              <i class="bi bi-arrow-up-right cm-channel__arrow" aria-hidden="true"></i>
-            </a>
-          {%- endif -%}
           {%- if s.instagram_url != blank -%}
             <a class="cm-channel" href="{{ s.instagram_url }}" target="_blank" rel="noopener">
               <span class="cm-channel__icon" aria-hidden="true"><i class="bi bi-instagram"></i></span>
