@@ -846,87 +846,38 @@
     box.classList.add('tvastra-size-error');
     getMessage(box).classList.add('show');
 
-    // Strong, immediate visual feedback on the Add to Cart CTA.
-    // Use the Web Animations API as the primary path so theme CSS/transition
-    // rules cannot swallow the shake.
-    var addButton = target && target.matches && target.matches('[name="add"]')
-      ? target
-      : closest(target, '[name="add"]');
+    // Put the attention on the actual size selector so the customer
+    // immediately sees where the missing action is.
+    box.classList.remove('tvastra-size-options-attention');
+    void box.offsetWidth;
+    box.classList.add('tvastra-size-options-attention');
 
-    if (!addButton && box) {
-      addButton = box.closest('.product-info, .product-info-right')?.querySelector('[name="add"]');
-    }
-
-    if (addButton) {
-      addButton.classList.remove(
-        'tvastra-size-required-shake',
-        'tvastra-size-required-highlight',
-        'tvastra-size-required-attention'
-      );
-      void addButton.offsetWidth;
-      addButton.classList.add(
-        'tvastra-size-required-shake',
-        'tvastra-size-required-highlight',
-        'tvastra-size-required-attention'
-      );
-
-      // Make the action unmistakable: temporarily change only the visible
-      // button label, then restore the exact original text.
-      var addLabel = addButton.querySelector('span');
-      var originalAddLabel = addLabel ? addLabel.textContent : '';
-      if (addLabel) {
-        addLabel.textContent = 'Select your size';
-        addButton.setAttribute('aria-label', 'Select your size before adding to cart');
-      }
-
-      window.setTimeout(function () {
-        addButton.classList.remove(
-          'tvastra-size-required-highlight',
-          'tvastra-size-required-attention'
-        );
-        if (addLabel) {
-          addLabel.textContent = originalAddLabel;
-          addButton.removeAttribute('aria-label');
+    if (typeof box.animate === 'function' &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      box.animate(
+        [
+          { transform: 'translate3d(0,0,0) rotate(0deg)' },
+          { transform: 'translate3d(-9px,0,0) rotate(-1deg)' },
+          { transform: 'translate3d(9px,0,0) rotate(1deg)' },
+          { transform: 'translate3d(-8px,0,0) rotate(-.9deg)' },
+          { transform: 'translate3d(8px,0,0) rotate(.9deg)' },
+          { transform: 'translate3d(-6px,0,0) rotate(-.65deg)' },
+          { transform: 'translate3d(6px,0,0) rotate(.65deg)' },
+          { transform: 'translate3d(-3px,0,0) rotate(-.3deg)' },
+          { transform: 'translate3d(0,0,0) rotate(0deg)' }
+        ],
+        {
+          duration: 900,
+          easing: 'cubic-bezier(.36,.07,.19,.97)',
+          fill: 'none'
         }
-      }, 1200);
-
-      if (typeof addButton.animate === 'function' &&
-          !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        addButton.animate(
-          [
-            { transform: 'translate3d(0,0,0) rotate(0deg) scale(1)' },
-            { transform: 'translate3d(-8px,0,0) rotate(-1deg) scale(.995)' },
-            { transform: 'translate3d(8px,0,0) rotate(1deg) scale(.995)' },
-            { transform: 'translate3d(-7px,0,0) rotate(-.9deg) scale(.997)' },
-            { transform: 'translate3d(7px,0,0) rotate(.9deg) scale(.997)' },
-            { transform: 'translate3d(-5px,0,0) rotate(-.6deg) scale(1)' },
-            { transform: 'translate3d(5px,0,0) rotate(.6deg) scale(1)' },
-            { transform: 'translate3d(-2px,0,0) rotate(-.25deg) scale(1)' },
-            { transform: 'translate3d(0,0,0) rotate(0deg) scale(1)' }
-          ],
-          {
-            duration: 760,
-            easing: 'cubic-bezier(.36,.07,.19,.97)',
-            fill: 'none'
-          }
-        );
-      }
-
-      var addIcon = addButton.querySelector('i');
-      if (addIcon && typeof addIcon.animate === 'function' &&
-          !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        addIcon.animate(
-          [
-            { transform: 'translate3d(0,0,0)' },
-            { transform: 'translate3d(0,-3px,0)' },
-            { transform: 'translate3d(0,2px,0)' },
-            { transform: 'translate3d(0,-2px,0)' },
-            { transform: 'translate3d(0,0,0)' }
-          ],
-          { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'none' }
-        );
-      }
+      );
     }
+
+    window.setTimeout(function () {
+      box.classList.remove('tvastra-size-options-attention');
+    }, 1200);
+
 
     // Make the "Please select your size" message pop as soon as it appears.
     var sizeMessage = getMessage(box);
