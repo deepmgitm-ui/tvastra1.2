@@ -10,38 +10,33 @@
   {%- assign product_variant = product_for_badge -%}
 {%- endif -%}
 {%- assign custom_product_badge = product_for_badge.metafields.custom.product_badge.value | default: product_for_badge.metafields.custom.product_badge | strip -%}
-{%- assign show_badge_wrapper = false -%}
-{%- if request.page_type == 'product' and custom_product_badge != blank -%}
-  {%- assign show_badge_wrapper = true -%}
-{%- endif -%}
-{%- if display_label == true -%}
-  {%- assign show_badge_wrapper = true -%}
-{%- endif -%}
 
 {%- if product_variant.available == false -%}
   <div class="badge-wrap tvastra-stock-badge-wrap d-flex align-items-start alt-font">
     <span class="badge sold-out tvastra-card-stock-badge">Out of stock</span>
   </div>
-{%- else -%}
-  {%- if show_badge_wrapper -%}
+{%- elsif request.page_type == 'product' -%}
+  {%- if custom_product_badge != blank -%}
     <div class="badge-wrap d-flex align-items-start alt-font">
-      {%- if request.page_type == 'product' and custom_product_badge != blank -%}
-        <span class="badge tvastra-custom-product-badge" aria-label="{{ custom_product_badge | escape }}">{{ custom_product_badge | escape }}</span>
-      {%- endif -%}
+      <span class="badge tvastra-custom-product-badge" aria-label="{{ custom_product_badge | escape }}">{{ custom_product_badge | escape }}</span>
+    </div>
+  {%- endif -%}
+{%- elsif display_label == true -%}
+  <div class="badge-wrap d-flex align-items-start alt-font">
     {%- comment -%} Sale label {%- endcomment -%}
     {%- if product_variant.compare_at_price > product_variant.price -%}
       {%- if sale_label_type == 'discount' -%}
         {%- if product_for_badge.has_only_default_variant or product_for_badge.variants.size > 0 and product_for_badge.price_varies == false or product_for_badge.compare_at_price_varies == false -%}
-          <span class="badge discount tvastra-product-sale-badge" aria-hidden="true">
+          <span class="badge discount" aria-hidden="true">
             {%- assign price_percentage = product_variant.compare_at_price | minus: product_variant.price | times: 100.0 | divided_by: product_variant.compare_at_price | round -%}
             {%- if price_percentage < 9 -%}0{%- endif -%}{{ price_percentage }}%
           </span>
         {%- else -%}
-          <span class="badge tvastra-product-sale-badge">{{ sale_label_text }}</span>
+          <span class="badge">{{ sale_label_text }}</span>
         {%- endif -%}
       {%- elsif sale_label_type == 'text-with-discount' -%}
         {%- if product_for_badge.has_only_default_variant or product_for_badge.variants.size > 0 and product_for_badge.price_varies == false or product_for_badge.compare_at_price_varies == false -%}
-          <span class="badge text-with-discount tvastra-product-sale-badge" aria-hidden="true">
+          <span class="badge text-with-discount" aria-hidden="true">
             {%- assign price_percentage = product_variant.compare_at_price | minus: product_variant.price | times: 100.0 | divided_by: product_variant.compare_at_price | round -%}
             {{ sale_label_text }} <span>{%- if price_percentage < 9 -%}0{%- endif -%}{{ price_percentage }}%</span>
           </span>
@@ -72,6 +67,5 @@
         <span class="badge new">{{ new_label_text }}</span>
       {%- endif -%}
     {%- endif -%}
-    </div>
-  {%- endif -%}
+  </div>
 {%- endif -%}
