@@ -171,7 +171,20 @@ if (!window.tvastraCartFeedbackBound) {
     };
 
     const productForm = event.detail?.productForm;
-    replayAnimation(productForm?.querySelector('[name="add"]'), 'tvastra-added-feedback', 560);
+    const addButton = productForm?.querySelector('[name="add"]');
+    replayAnimation(addButton, 'tvastra-added-feedback', 620);
+    replayAnimation(addButton, 'tvastra-add-success-shake', 620);
+
+    // Small haptic confirmation on supported mobile browsers.
+    // It intentionally fires only after Shopify confirms the item was added,
+    // so a missing-size validation does not vibrate the device.
+    if (
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      typeof navigator !== 'undefined' &&
+      typeof navigator.vibrate === 'function'
+    ) {
+      navigator.vibrate([16, 28, 16]);
+    }
 
     document.querySelectorAll('[cart-icon-bubble], .sticky-menu-item.sticky-cart').forEach((cartTrigger) => {
       replayAnimation(cartTrigger, 'tvastra-cart-shake', 620);
