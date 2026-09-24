@@ -845,6 +845,33 @@
     clearVisualSize(box);
     box.classList.add('tvastra-size-error');
     getMessage(box).classList.add('show');
+
+    // Make the exact CTA the customer just pressed visibly shake so the
+    // missing-size requirement is obvious without changing the existing
+    // validation/message behavior.
+    if (target && target.classList) {
+      target.classList.remove('tvastra-size-required-shake');
+      void target.offsetWidth;
+      target.classList.add('tvastra-size-required-shake');
+      window.setTimeout(function () {
+        target.classList.remove('tvastra-size-required-shake');
+      }, 620);
+    }
+
+    // Haptic feedback must run inside the original click/submit gesture.
+    // Async "after add" vibration can be rejected by mobile browsers.
+    if (
+      typeof navigator !== 'undefined' &&
+      typeof navigator.vibrate === 'function' &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      try {
+        navigator.vibrate([24, 42, 24]);
+      } catch (error) {
+        // Vibration is optional; never let it affect the purchase flow.
+      }
+    }
+
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     return true;
