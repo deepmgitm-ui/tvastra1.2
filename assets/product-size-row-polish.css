@@ -142,6 +142,8 @@
 @media (prefers-reduced-motion: reduce) {
   .main-product-page .cart-btn.tvastra-added-feedback,
   .main-product-page .cart-btn.tvastra-add-success-shake,
+  .main-product-page .cart-btn.tvastra-size-required-shake,
+  .main-product-page [name="add"].tvastra-size-required-shake,
   [cart-icon-bubble].tvastra-cart-shake,
   .sticky-menu-item.sticky-cart.tvastra-cart-shake {
     animation: none !important;
@@ -346,6 +348,40 @@
     padding: 3px 6px !important;
     font-size: 9px !important;
   }
+}
+
+@keyframes tvastra-size-required-shake {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  12% {
+    transform: translateX(-3px) scale(.99);
+  }
+  24% {
+    transform: translateX(3px) scale(.995);
+  }
+  36% {
+    transform: translateX(-2.5px) scale(.992);
+  }
+  48% {
+    transform: translateX(2.5px) scale(.998);
+  }
+  60% {
+    transform: translateX(-1.5px) scale(.997);
+  }
+  74% {
+    transform: translateX(1px) scale(1.002);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
+}
+
+.main-product-page .cart-btn.tvastra-size-required-shake,
+.main-product-page [name="add"].tvastra-size-required-shake {
+  animation: tvastra-size-required-shake 620ms cubic-bezier(.22, 1, .36, 1) !important;
+  transform-origin: center;
+  will-change: transform;
 }
 
 @keyframes tvastra-add-submit-feedback {
