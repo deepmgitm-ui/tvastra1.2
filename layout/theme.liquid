@@ -858,13 +858,37 @@
     }
 
     if (addButton) {
-      addButton.classList.remove('tvastra-size-required-shake', 'tvastra-size-required-highlight');
+      addButton.classList.remove(
+        'tvastra-size-required-shake',
+        'tvastra-size-required-highlight',
+        'tvastra-size-required-attention'
+      );
       void addButton.offsetWidth;
-      addButton.classList.add('tvastra-size-required-shake', 'tvastra-size-required-highlight');
+      addButton.classList.add(
+        'tvastra-size-required-shake',
+        'tvastra-size-required-highlight',
+        'tvastra-size-required-attention'
+      );
+
+      // Make the action unmistakable: temporarily change only the visible
+      // button label, then restore the exact original text.
+      var addLabel = addButton.querySelector('span');
+      var originalAddLabel = addLabel ? addLabel.textContent : '';
+      if (addLabel) {
+        addLabel.textContent = 'Select your size';
+        addButton.setAttribute('aria-label', 'Select your size before adding to cart');
+      }
 
       window.setTimeout(function () {
-        addButton.classList.remove('tvastra-size-required-highlight');
-      }, 1000);
+        addButton.classList.remove(
+          'tvastra-size-required-highlight',
+          'tvastra-size-required-attention'
+        );
+        if (addLabel) {
+          addLabel.textContent = originalAddLabel;
+          addButton.removeAttribute('aria-label');
+        }
+      }, 1200);
 
       if (typeof addButton.animate === 'function' &&
           !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
