@@ -3933,3 +3933,10 @@
     font-size: 8px !important;
   }
 }
+
+
+/* TVASTRA: product sale badge red */
+.main-product-page .product-gallery .tvastra-product-sale-badge {
+  background: #d93636 !important;
+  color: #ffffff !important;
+}
