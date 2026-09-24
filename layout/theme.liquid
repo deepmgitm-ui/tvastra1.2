@@ -858,9 +858,13 @@
     }
 
     if (addButton) {
-      addButton.classList.remove('tvastra-size-required-shake');
+      addButton.classList.remove('tvastra-size-required-shake', 'tvastra-size-required-highlight');
       void addButton.offsetWidth;
-      addButton.classList.add('tvastra-size-required-shake');
+      addButton.classList.add('tvastra-size-required-shake', 'tvastra-size-required-highlight');
+
+      window.setTimeout(function () {
+        addButton.classList.remove('tvastra-size-required-highlight');
+      }, 1000);
 
       if (typeof addButton.animate === 'function' &&
           !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
