@@ -10,13 +10,20 @@
   {%- assign product_variant = product_for_badge -%}
 {%- endif -%}
 {%- assign custom_product_badge = product_for_badge.metafields.custom.product_badge.value | default: product_for_badge.metafields.custom.product_badge | strip -%}
+{%- assign show_badge_wrapper = false -%}
+{%- if request.page_type == 'product' and custom_product_badge != blank -%}
+  {%- assign show_badge_wrapper = true -%}
+{%- endif -%}
+{%- if display_label == true -%}
+  {%- assign show_badge_wrapper = true -%}
+{%- endif -%}
 
 {%- if product_variant.available == false -%}
   <div class="badge-wrap tvastra-stock-badge-wrap d-flex align-items-start alt-font">
     <span class="badge sold-out tvastra-card-stock-badge">Out of stock</span>
   </div>
 {%- else -%}
-  {%- if request.page_type == 'product' and custom_product_badge != blank or display_label == true -%}
+  {%- if show_badge_wrapper -%}
     <div class="badge-wrap d-flex align-items-start alt-font">
       {%- if request.page_type == 'product' and custom_product_badge != blank -%}
         <span class="badge tvastra-custom-product-badge" aria-label="{{ custom_product_badge | escape }}">{{ custom_product_badge | escape }}</span>
