@@ -351,36 +351,21 @@
 }
 
 @keyframes tvastra-size-required-shake {
-  0% {
-    transform: translateX(0) scale(1);
-  }
-  12% {
-    transform: translateX(-3px) scale(.99);
-  }
-  24% {
-    transform: translateX(3px) scale(.995);
-  }
-  36% {
-    transform: translateX(-2.5px) scale(.992);
-  }
-  48% {
-    transform: translateX(2.5px) scale(.998);
-  }
-  60% {
-    transform: translateX(-1.5px) scale(.997);
-  }
-  74% {
-    transform: translateX(1px) scale(1.002);
-  }
-  100% {
-    transform: translateX(0) scale(1);
-  }
+  0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  12% { transform: translate3d(-8px, 0, 0) rotate(-1deg) scale(.995); }
+  24% { transform: translate3d(8px, 0, 0) rotate(1deg) scale(.995); }
+  36% { transform: translate3d(-7px, 0, 0) rotate(-.9deg) scale(.997); }
+  48% { transform: translate3d(7px, 0, 0) rotate(.9deg) scale(.997); }
+  60% { transform: translate3d(-5px, 0, 0) rotate(-.6deg) scale(1); }
+  72% { transform: translate3d(5px, 0, 0) rotate(.6deg) scale(1); }
+  84% { transform: translate3d(-2px, 0, 0) rotate(-.25deg) scale(1); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
 }
 
 .main-product-page .cart-btn.tvastra-size-required-shake,
 .main-product-page [name="add"].tvastra-size-required-shake {
-  animation: tvastra-size-required-shake 620ms cubic-bezier(.22, 1, .36, 1) !important;
-  transform-origin: center;
+  animation: tvastra-size-required-shake 760ms cubic-bezier(.36,.07,.19,.97) !important;
+  transform-origin: center !important;
   will-change: transform;
 }
 
@@ -634,7 +619,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .main-product-page .cart-btn.tvastra-add-pending,
-  .main-product-page .cart-btn.tvastra-add-pending i {
+  .main-product-page .cart-btn.tvastra-add-pending i,
+  .main-product-page .cart-btn.tvastra-size-required-shake,
+  .main-product-page [name="add"].tvastra-size-required-shake {
     animation: none !important;
   }
 }
