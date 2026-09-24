@@ -913,18 +913,23 @@
       );
     }
 
-    // Haptic feedback must run inside the original click/submit gesture.
-    // It is optional and never allowed to interrupt purchase/validation logic.
+    // Strong haptic feedback: run directly inside the user's tap.
+    // Do not tie haptics to prefers-reduced-motion; that setting controls
+    // visual motion, while this is the explicit CTA feedback requested here.
     if (
       typeof navigator !== 'undefined' &&
-      typeof navigator.vibrate === 'function' &&
-      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      typeof navigator.vibrate === 'function'
     ) {
       try {
-        navigator.vibrate([35, 55, 35]);
+        var vibrationStarted = navigator.vibrate([90, 45, 90]);
+
+        // Keep the result available for troubleshooting without changing UX.
+        window.__tvastraVibrationSupported = vibrationStarted !== false;
       } catch (error) {
-        // Vibration is optional; never let it affect the purchase flow.
+        window.__tvastraVibrationSupported = false;
       }
+    } else {
+      window.__tvastraVibrationSupported = false;
     }
 
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
