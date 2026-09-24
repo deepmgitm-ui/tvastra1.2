@@ -3894,3 +3894,42 @@
     opacity: 1 !important;
   }
 }
+
+/* TVASTRA: custom product badge via product.metafields.custom.product_badge */
+.main-product-page .tvastra-custom-product-badge {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+  max-width: min(220px, calc(100vw - 48px));
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 6px 0 0 !important;
+  padding: 5px 9px !important;
+  border: 0 !important;
+  border-radius: 2px !important;
+  background: #d93636 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.02em !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.main-product-page .product-gallery .tvastra-custom-product-badge {
+  flex: 0 0 auto !important;
+}
+
+@media (max-width: 767px) {
+  .main-product-page .tvastra-custom-product-badge {
+    max-width: min(180px, calc(100vw - 36px));
+    padding: 4px 7px !important;
+    font-size: 8px !important;
+  }
+}
