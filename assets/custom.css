@@ -4707,3 +4707,35 @@ html body [class*="spur" i] form label {
 #cart-notification [data-tvastra-drawer-total-only] {
   display: block !important;
 }
+
+/* TVASTRA: product metafield badge */
+.tvastra-custom-product-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 5px 9px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 2px !important;
+  background: #d93636 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.02em !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 767px) {
+  .tvastra-custom-product-badge {
+    max-width: min(180px, calc(100vw - 36px));
+    padding: 4px 7px !important;
+    font-size: 8px !important;
+  }
+}
