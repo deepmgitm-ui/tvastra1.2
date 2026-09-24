@@ -846,27 +846,82 @@
     box.classList.add('tvastra-size-error');
     getMessage(box).classList.add('show');
 
-    // Make the exact CTA the customer just pressed visibly shake so the
-    // missing-size requirement is obvious without changing the existing
-    // validation/message behavior.
-    if (target && target.classList) {
-      target.classList.remove('tvastra-size-required-shake');
-      void target.offsetWidth;
-      target.classList.add('tvastra-size-required-shake');
-      window.setTimeout(function () {
-        target.classList.remove('tvastra-size-required-shake');
-      }, 620);
+    // Strong, immediate visual feedback on the Add to Cart CTA.
+    // Use the Web Animations API as the primary path so theme CSS/transition
+    // rules cannot swallow the shake.
+    var addButton = target && target.matches && target.matches('[name="add"]')
+      ? target
+      : closest(target, '[name="add"]');
+
+    if (!addButton && box) {
+      addButton = box.closest('.product-info, .product-info-right')?.querySelector('[name="add"]');
+    }
+
+    if (addButton) {
+      addButton.classList.remove('tvastra-size-required-shake');
+      void addButton.offsetWidth;
+      addButton.classList.add('tvastra-size-required-shake');
+
+      if (typeof addButton.animate === 'function' &&
+          !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        addButton.animate(
+          [
+            { transform: 'translate3d(0,0,0) rotate(0deg) scale(1)' },
+            { transform: 'translate3d(-8px,0,0) rotate(-1deg) scale(.995)' },
+            { transform: 'translate3d(8px,0,0) rotate(1deg) scale(.995)' },
+            { transform: 'translate3d(-7px,0,0) rotate(-.9deg) scale(.997)' },
+            { transform: 'translate3d(7px,0,0) rotate(.9deg) scale(.997)' },
+            { transform: 'translate3d(-5px,0,0) rotate(-.6deg) scale(1)' },
+            { transform: 'translate3d(5px,0,0) rotate(.6deg) scale(1)' },
+            { transform: 'translate3d(-2px,0,0) rotate(-.25deg) scale(1)' },
+            { transform: 'translate3d(0,0,0) rotate(0deg) scale(1)' }
+          ],
+          {
+            duration: 760,
+            easing: 'cubic-bezier(.36,.07,.19,.97)',
+            fill: 'none'
+          }
+        );
+      }
+
+      var addIcon = addButton.querySelector('i');
+      if (addIcon && typeof addIcon.animate === 'function' &&
+          !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        addIcon.animate(
+          [
+            { transform: 'translate3d(0,0,0)' },
+            { transform: 'translate3d(0,-3px,0)' },
+            { transform: 'translate3d(0,2px,0)' },
+            { transform: 'translate3d(0,-2px,0)' },
+            { transform: 'translate3d(0,0,0)' }
+          ],
+          { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'none' }
+        );
+      }
+    }
+
+    // Make the "Please select your size" message pop as soon as it appears.
+    var sizeMessage = getMessage(box);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+        typeof sizeMessage.animate === 'function') {
+      sizeMessage.animate(
+        [
+          { opacity: 0, transform: 'translateY(-4px) scale(.985)' },
+          { opacity: 1, transform: 'translateY(0) scale(1)' }
+        ],
+        { duration: 280, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'none' }
+      );
     }
 
     // Haptic feedback must run inside the original click/submit gesture.
-    // Async "after add" vibration can be rejected by mobile browsers.
+    // It is optional and never allowed to interrupt purchase/validation logic.
     if (
       typeof navigator !== 'undefined' &&
       typeof navigator.vibrate === 'function' &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
       try {
-        navigator.vibrate([24, 42, 24]);
+        navigator.vibrate([35, 55, 35]);
       } catch (error) {
         // Vibration is optional; never let it affect the purchase flow.
       }
