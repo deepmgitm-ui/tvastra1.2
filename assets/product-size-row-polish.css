@@ -501,6 +501,48 @@
   box-shadow: 0 0 0 1px rgba(216, 178, 63, .18) inset !important;
 }
 
+@keyframes tvastra-size-chip-attention {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  20% {
+    transform: translate3d(-3px, 0, 0);
+  }
+  40% {
+    transform: translate3d(3px, 0, 0);
+  }
+  60% {
+    transform: translate3d(-2px, 0, 0);
+  }
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+}
+
+.main-product-page .product-variants fieldset.size-filter.tvastra-size-options-attention .variant-option {
+  animation: tvastra-size-chip-attention 520ms cubic-bezier(.36,.07,.19,.97) both !important;
+  will-change: transform;
+}
+
+.main-product-page .product-variants fieldset.size-filter.tvastra-size-options-attention .variant-option:nth-child(2) {
+  animation-delay: 35ms !important;
+}
+.main-product-page .product-variants fieldset.size-filter.tvastra-size-options-attention .variant-option:nth-child(3) {
+  animation-delay: 70ms !important;
+}
+.main-product-page .product-variants fieldset.size-filter.tvastra-size-options-attention .variant-option:nth-child(4) {
+  animation-delay: 105ms !important;
+}
+.main-product-page .product-variants fieldset.size-filter.tvastra-size-options-attention .variant-option:nth-child(5) {
+  animation-delay: 140ms !important;
+}
+.main-product-page .product-variants fieldset.size-filter.tvastra-size-options-attention .variant-option:nth-child(6) {
+  animation-delay: 175ms !important;
+}
+.main-product-page .product-variants fieldset.size-filter.tvastra-size-options-attention .variant-option:nth-child(7) {
+  animation-delay: 210ms !important;
+}
+
 @keyframes tvastra-add-submit-feedback {
   0% {
     transform: translateX(0) scale(1);
