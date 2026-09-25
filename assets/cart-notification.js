@@ -41,7 +41,7 @@ class CartNotification extends HTMLElement {
         },300);
         clearTimeout(this.closeTimeoutID);
     }
-    renderContents(parsedState) {
+    renderContents(parsedState, suppressOpen = false) {
       var _this = this;
       const parsedStateSections = parsedState.sections;
       if (parsedStateSections != undefined) {
@@ -71,7 +71,12 @@ class CartNotification extends HTMLElement {
       }
       if (window.jQuery) {
       }
-      this.open(autoClose);
+
+      // Product add-to-cart can refresh cart contents without opening the
+      // theme minicart when Razorpay Magic Checkout is the active surface.
+      if (!suppressOpen) {
+        this.open(autoClose);
+      }
     }
     updateContent(parsedStateSections) {
       var _this = this;
