@@ -28,6 +28,15 @@ class CartNotification extends HTMLElement {
     }
     open(autoClose) {
         var _this = this;
+
+        if (
+          window.tvastraSuppressThemeMiniCartUntil &&
+          Date.now() < window.tvastraSuppressThemeMiniCartUntil
+        ) {
+          this.close();
+          return;
+        }
+
         this.notification.classList.add('active');
         document.body.classList.add('minicart-active');
         document.body.style.marginRight = (window.innerWidth - $(window).width())  + 'px';
@@ -72,9 +81,14 @@ class CartNotification extends HTMLElement {
       if (window.jQuery) {
       }
 
+      const cartOpenSuppressed = (
+        window.tvastraSuppressThemeMiniCartUntil &&
+        Date.now() < window.tvastraSuppressThemeMiniCartUntil
+      );
+
       // Product add-to-cart can refresh cart contents without opening the
       // theme minicart when Razorpay Magic Checkout is the active surface.
-      if (!suppressOpen) {
+      if (!suppressOpen && !cartOpenSuppressed) {
         this.open(autoClose);
       }
     }
