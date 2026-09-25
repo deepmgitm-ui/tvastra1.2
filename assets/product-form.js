@@ -47,7 +47,9 @@ class ProductForm extends HTMLElement {
         else{
           $('.product-form__error-message-wrapper').addClass('d-none');
          if (parsedState && this.cartNotification) {
-  this.cartNotification.renderContents(parsedState);
+  // Refresh the site's cart data without opening the theme minicart.
+  // Razorpay Magic Checkout handles the post-add checkout surface.
+  this.cartNotification.renderContents(parsedState, true);
 }
           document.dispatchEvent(new CustomEvent('tvastra:product-added', {
             detail: {
