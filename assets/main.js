@@ -761,7 +761,14 @@ $(document).ready( function() {
     }
     function onItemAdded(response) {
         var cartNotification = document.querySelector('cart-notification');
-        cartNotification?.renderContents(response);
+        if (!cartNotification) return;
+
+        const suppressOpen = (
+          window.tvastraSuppressThemeMiniCartUntil &&
+          Date.now() < window.tvastraSuppressThemeMiniCartUntil
+        );
+
+        cartNotification.renderContents(response, suppressOpen);
     }    
 
     function getShopGridColumn() {
