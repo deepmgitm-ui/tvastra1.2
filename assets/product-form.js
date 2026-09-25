@@ -7,6 +7,17 @@ class ProductForm extends HTMLElement {
   }
   onSubmitHandler(evt) {
     evt.preventDefault();
+
+    // Razorpay Magic Checkout is the intended post-add checkout surface on the
+    // product page. Temporarily suppress the theme minicart so both drawers
+    // cannot open on the same add-to-cart action.
+    window.tvastraSuppressThemeMiniCartUntil = Date.now() + 10000;
+
+    const existingMiniCart = document.querySelector('cart-notification');
+    if (existingMiniCart && typeof existingMiniCart.close === 'function') {
+      existingMiniCart.close();
+    }
+
     const submitButton = this.querySelector('[type="submit"]');
     submitButton.setAttribute('disabled', true);
     submitButton.classList.add('loading');
@@ -64,6 +75,13 @@ class ProductForm extends HTMLElement {
         console.error(e);
       })
       .finally(() => {
+        window.setTimeout(() => {
+          if (window.tvastraSuppressThemeMiniCartUntil &&
+              Date.now() >= window.tvastraSuppressThemeMiniCartUntil) {
+            window.tvastraSuppressThemeMiniCartUntil = 0;
+          }
+        }, 10200);
+
         submitButton.classList.remove('loading');
         submitButton.removeAttribute('disabled');
       });
