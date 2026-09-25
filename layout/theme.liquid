@@ -210,7 +210,7 @@
       {%- if template.name == 'collection' -%}
         <script src="{{ 'collection-load-more.js' | asset_url }}" defer="defer"></script>
       {%- endif -%}
-      <script src="{{ 'cart-notification.js' | asset_url | split: '?' | first }}?v=cart-premium-v8" defer="defer"></script>
+      <script src="{{ 'cart-notification.js' | asset_url | split: '?' | first }}?v=cart-premium-v9" defer="defer"></script>
       {%- if settings.show_compare == true -%}
   <script src="{{ 'compare.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
@@ -964,6 +964,63 @@
 
 
   
+<script>
+(function () {
+  if (window.tvastraThemeMiniCartGuardV2) return;
+  window.tvastraThemeMiniCartGuardV2 = true;
+
+  function suppressed() {
+    return !!(
+      window.tvastraSuppressThemeMiniCartUntil &&
+      Date.now() < window.tvastraSuppressThemeMiniCartUntil
+    );
+  }
+
+  function closeThemeMiniCartIfSuppressed() {
+    if (!suppressed()) return;
+
+    var panel = document.getElementById('cart-notification');
+    var drawer = document.querySelector('cart-notification');
+    var isOpen = !!(
+      (panel && panel.classList.contains('active')) ||
+      document.body.classList.contains('minicart-active')
+    );
+
+    if (!isOpen) return;
+
+    if (drawer && typeof drawer.close === 'function') {
+      drawer.close();
+    } else if (panel) {
+      panel.classList.remove('active');
+      document.body.classList.remove('minicart-active');
+      document.body.style.marginRight = '0px';
+    }
+  }
+
+  document.addEventListener('tvastra:product-added', function () {
+    closeThemeMiniCartIfSuppressed();
+    window.setTimeout(closeThemeMiniCartIfSuppressed, 50);
+    window.setTimeout(closeThemeMiniCartIfSuppressed, 250);
+    window.setTimeout(closeThemeMiniCartIfSuppressed, 600);
+    window.setTimeout(closeThemeMiniCartIfSuppressed, 1200);
+  }, true);
+
+  var observer = new MutationObserver(function () {
+    closeThemeMiniCartIfSuppressed();
+  });
+
+  observer.observe(document.documentElement, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class', 'style']
+  });
+
+  window.setInterval(function () {
+    if (suppressed()) closeThemeMiniCartIfSuppressed();
+  }, 300);
+})();
+</script>
+
 {% render 'magicSidecartScript', email: customer.email, phone: customer.phone %}
 </body>
 </html>
