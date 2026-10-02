@@ -1024,5 +1024,45 @@
 
 {% render 'magicSidecartScript', email: customer.email, phone: customer.phone %}
 
+<script>
+(function () {
+  if (window.__tvastraMagicCartBridgeV1) return;
+  window.__tvastraMagicCartBridgeV1 = true;
+
+  document.addEventListener('click', function (event) {
+    var trigger = event.target && event.target.closest
+      ? event.target.closest('.cart-icon-bubble')
+      : null;
+
+    if (!trigger) return;
+
+    // Never allow the theme's native anchor navigation to /cart.
+    // Do not stop propagation: Razorpay Magic Cart must receive the same click.
+    event.preventDefault();
+
+    // Hongo's legacy cart drawer must never remain visible from this click.
+    var closeLegacyCart = function () {
+      var drawer = document.querySelector('cart-notification');
+      if (drawer && typeof drawer.close === 'function') {
+        drawer.close();
+        return;
+      }
+
+      var panel = document.getElementById('cart-notification');
+      if (panel) {
+        panel.classList.remove('active');
+        document.body.classList.remove('minicart-active');
+        document.body.style.marginRight = '0px';
+      }
+    };
+
+    window.setTimeout(closeLegacyCart, 0);
+    window.setTimeout(closeLegacyCart, 80);
+    window.setTimeout(closeLegacyCart, 250);
+  }, true);
+})();
+</script>
+
+
 </body>
 </html>
