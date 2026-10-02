@@ -138,20 +138,52 @@
 
     setStatus(input, 'Applying coupon…', true);
 
-    return fetch(rootUrl() + 'cart/update.js', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      credentials: 'same-origin',
-      body: body
+    return fetch(rootUrl() + 'cart.js', {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      credentials: 'same-origin'
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Unable to read Shopify cart');
+      return response.json();
+    }).then(function (currentCart) {
+      var existingCodes = Array.isArray(currentCart.discount_codes)
+        ? currentCart.discount_codes.map(function (entry) {
+            return String(entry && entry.code || '').trim();
+          }).filter(Boolean)
+        : [];
+
+      // Shopify's AJAX discount parameter replaces the full discount-code set,
+      // so preserve any existing Shopify codes when adding a new one.
+      var mergedCodes = existingCodes.filter(function (existing) {
+        return existing.toLowerCase() !== code.toLowerCase();
+      });
+      mergedCodes.push(code);
+
+      return fetch(rootUrl() + 'cart/update.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ discount: mergedCodes.join(',') })
+      });
     }).then(function (response) {
       if (!response.ok) {
         throw new Error('Shopify cart discount request failed');
       }
       return response.json();
     }).then(function (cart) {
+      var discountEntry = Array.isArray(cart.discount_codes)
+        ? cart.discount_codes.find(function (entry) {
+            return String(entry && entry.code || '').toLowerCase() === code.toLowerCase();
+          })
+        : null;
+
+      if (!discountEntry || discountEntry.applicable !== true) {
+        throw new Error('Shopify rejected the discount code for this cart');
+      }
+
       window.tvastraShopifyCouponBridgeLast = {
         code: code,
         appliedAt: Date.now(),
