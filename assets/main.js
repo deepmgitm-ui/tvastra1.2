@@ -886,20 +886,7 @@ $(document).ready( function() {
         setCookie('announcementbarclosed', 1, '30');
     });
     
-    /* Razorpay Magic Sidecart owns the cart icon interaction.
-       Register after Razorpay's deferred sidecart script so Razorpay receives
-       the click first; then cancel the fallback /cart navigation. */
-    window.setTimeout(function () {
-        document.addEventListener('click', function (event) {
-            const target = event.target && event.target.closest
-                ? event.target.closest('[data-tvastra-cart-trigger], [cart-icon-bubble], .sticky-menu-item.sticky-cart a')
-                : null;
-
-            if (!target || window.location.pathname === (window.routes && window.routes.cart_url)) return;
-
-            event.preventDefault();
-        });
-    }, 0);
+    /* Razorpay Magic Sidecart owns the cart icon interaction. */
     
     /****** Close minicart ******/
     $(document).on('click', 'cart-notification', function(event) {
