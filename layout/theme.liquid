@@ -972,6 +972,81 @@
 
 
 
+<script>
+(function () {
+  var magicSrc = 'https://magic-plugins.razorpay.com/shopify-sidecart/magic-shopify-sidecart.js';
+
+  function getMagicScript() {
+    var scripts = document.getElementsByTagName('script');
+    for (var i = 0; i < scripts.length; i++) {
+      if (scripts[i].src && scripts[i].src.indexOf(magicSrc) !== -1) return scripts[i];
+    }
+    return null;
+  }
+
+  function ensureMagicScript() {
+    var existing = getMagicScript();
+    if (existing && existing.dataset.tvastraMagicFailed === 'true') {
+      existing.remove();
+      existing = null;
+    }
+
+    if (!existing) {
+      existing = document.createElement('script');
+      existing.src = magicSrc;
+      existing.defer = true;
+      existing.setAttribute('data-tvastra-magic-sidecart', 'true');
+      document.head.appendChild(existing);
+    }
+
+    if (!existing.dataset.tvastraMagicListeners) {
+      existing.dataset.tvastraMagicListeners = 'true';
+      existing.addEventListener('error', function () {
+        existing.dataset.tvastraMagicFailed = 'true';
+        window.__tvastraMagicSidecartFailed = true;
+      });
+      existing.addEventListener('load', function () {
+        window.__tvastraMagicSidecartLoaded = true;
+      });
+    }
+
+    return existing;
+  }
+
+  window.tvastraOpenMagicCart = function () {
+    var attempts = 0;
+    ensureMagicScript();
+
+    function tryOpen() {
+      if (
+        window.RazorpayMagic &&
+        window.RazorpayMagic.Cart &&
+        typeof window.RazorpayMagic.Cart.open === 'function'
+      ) {
+        window.RazorpayMagic.Cart.open();
+        return;
+      }
+
+      attempts += 1;
+
+      if (attempts === 20 && window.__tvastraMagicSidecartFailed) {
+        ensureMagicScript();
+      }
+
+      if (attempts < 60) {
+        window.setTimeout(tryOpen, 100);
+      } else {
+        console.error('Razorpay Magic Cart is not available.');
+      }
+    }
+
+    tryOpen();
+  };
+
+  ensureMagicScript();
+})();
+</script>
+
   <!-- TVASTRA-MAGIC-CART-DIRECT-V4 -->
 </body>
 </html>
