@@ -967,49 +967,7 @@
 
 
 {% render 'magicSidecartScript', email: customer.email, phone: customer.phone %}
-<script>
-(function () {
-  if (window.__tvastraDirectMagicCartV3) return;
-  window.__tvastraDirectMagicCartV3 = true;
 
-  function openMagicCart() {
-    try {
-      if (
-        window.RazorpayMagic &&
-        window.RazorpayMagic.Cart &&
-        typeof window.RazorpayMagic.Cart.open === 'function'
-      ) {
-        window.RazorpayMagic.Cart.open();
-        return true;
-      }
-    } catch (error) {
-      console.error('[Tvastra] Razorpay Magic Cart error:', error);
-    }
-    return false;
-  }
-
-  document.addEventListener('click', function (e) {
-    var cartButton = e.target && e.target.closest
-      ? e.target.closest('.cart-icon-bubble')
-      : null;
-
-    if (!cartButton) return;
-
-    e.preventDefault();
-
-    if (openMagicCart()) return;
-
-    var attempts = 0;
-    var retry = window.setInterval(function () {
-      attempts += 1;
-
-      if (openMagicCart() || attempts >= 10) {
-        window.clearInterval(retry);
-      }
-    }, 100);
-  }, true);
-})();
-</script>
 
 
 
