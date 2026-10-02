@@ -1023,21 +1023,6 @@
 
 
 {% render 'magicSidecartScript', email: customer.email, phone: customer.phone %}
-<script>
-  /* Let Razorpay register its cart-click handler first, then cancel only the
-     browser's native /cart navigation. */
-  document.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('click', function (event) {
-      var target = event.target && event.target.closest
-        ? event.target.closest('[data-tvastra-cart-trigger]')
-        : null;
 
-      if (!target) return;
-      if (window.location.pathname === (window.routes && window.routes.cart_url)) return;
-
-      event.preventDefault();
-    });
-  });
-</script>
 </body>
 </html>
