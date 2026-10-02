@@ -368,24 +368,7 @@ class CartNotification extends HTMLElement {
     }
 }
 customElements.define('cart-notification', CartNotification);
-(function () {
-  if (window.tvastraCartTriggerReady) return;
-  window.tvastraCartTriggerReady = true;
-
-  document.addEventListener('click', function (event) {
-    const target = event.target;
-    const trigger = target && target.closest
-      ? target.closest('[data-tvastra-cart-trigger], [cart-icon-bubble]')
-      : null;
-    const drawer = document.querySelector('cart-notification');
-
-    if (!trigger || !drawer || typeof drawer.open !== 'function') return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    drawer.open(false);
-  }, true);
-})();
+/* Razorpay Magic Sidecart owns the cart icon interaction. */
 (function () {
   if (window.tvastraCartOfferActionsReady) return;
   window.tvastraCartOfferActionsReady = true;
