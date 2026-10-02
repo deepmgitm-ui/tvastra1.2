@@ -7,7 +7,7 @@
 	</div>
 {%- else -%}
 	<div class="cart alt-font {{ settings.menu_text_case }}">
-	  <a {% if template != 'cart' %}cart-icon-bubble{% endif %} class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" href="{% if template == 'cart' %}{{ routes.cart_url }}{% else %}#{% endif %}" rel="noopener nofollow" aria-label="cart">
+	  <a {% if template != 'cart' %}cart-icon-bubble{% endif %} class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" href="#" rel="noopener nofollow" aria-label="cart">
 	  	<div class="cart-icon">
 	  		<i class="bi bi-bag-plus"></i><span data-cart-count class="count {% if cart.item_count == 0 %}d-none{% endif %}">{{ cart.item_count }}</span>
 	  	</div>
