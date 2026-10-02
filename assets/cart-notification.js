@@ -79,9 +79,8 @@ class CartNotification extends HTMLElement {
 
       // Product add-to-cart can refresh cart contents without opening the
       // theme minicart when Razorpay Magic Checkout is the active surface.
-      if (!suppressOpen && !cartOpenSuppressed) {
-        this.open(autoClose);
-      }
+      // Razorpay Magic Cart owns the cart surface; keep the legacy theme drawer closed.
+      this.close();
     }
     updateContent(parsedStateSections) {
       var _this = this;
