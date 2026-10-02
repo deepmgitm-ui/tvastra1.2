@@ -4739,3 +4739,12 @@ html body [class*="spur" i] form label {
     font-size: 8px !important;
   }
 }
+
+
+/* TVASTRA: the theme's legacy cart-notification drawer must stay hidden. Razorpay Magic Cart owns the cart surface. */
+cart-notification,
+cart-notification.active {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
