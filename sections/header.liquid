@@ -721,7 +721,87 @@
     padding: 4px 0;
     transition: transform 0.25s ease, color 0.25s ease;
   }
+
+  /* Tablet/iPad touch behavior for SHOP:
+     first tap opens the mega menu, second tap follows the SHOP link.
+     Desktop hover and mobile hamburger behavior remain unchanged. */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    body.is-touchable .navbar .navbar-nav .tvastra-touch-shop-open > .dropdown-menu.megamenu {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+    }
+
+    body.is-touchable .navbar .navbar-nav .tvastra-touch-shop-open > .nav-link {
+      position: relative;
+      z-index: 101;
+    }
+  }
 </style>
+
+<script>
+(function () {
+  if (window.__tvastraTabletShopMenuV1) return;
+  window.__tvastraTabletShopMenuV1 = true;
+
+  function isTabletTouch() {
+    return (
+      window.innerWidth >= 768 &&
+      window.innerWidth <= 1199 &&
+      document.body.classList.contains('is-touchable')
+    );
+  }
+
+  function getShopItem(target) {
+    var link = target && target.closest
+      ? target.closest('.navbar .navbar-nav .nav-item.megamenu-item > .nav-link')
+      : null;
+
+    if (!link) return null;
+
+    var label = (link.textContent || '').trim().toLowerCase();
+    if (label !== 'shop') return null;
+
+    return link.closest('.nav-item.megamenu-item');
+  }
+
+  function closeShopMenu() {
+    document.querySelectorAll('.navbar .navbar-nav .tvastra-touch-shop-open').forEach(function (item) {
+      item.classList.remove('tvastra-touch-shop-open');
+    });
+  }
+
+  document.addEventListener('click', function (event) {
+    if (!isTabletTouch()) return;
+
+    var shopItem = getShopItem(event.target);
+
+    if (shopItem) {
+      if (!shopItem.classList.contains('tvastra-touch-shop-open')) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeShopMenu();
+        shopItem.classList.add('tvastra-touch-shop-open');
+      }
+      return;
+    }
+
+    var openShop = document.querySelector('.navbar .navbar-nav .tvastra-touch-shop-open');
+    if (openShop && !openShop.contains(event.target)) {
+      closeShopMenu();
+    }
+  }, true);
+
+  window.addEventListener('resize', function () {
+    if (!isTabletTouch()) closeShopMenu();
+  });
+
+  document.addEventListener('shopify:section:load', function () {
+    closeShopMenu();
+  });
+})();
+</script>
 <span class="d-none">[devide]</span>
 {% schema %}
 {
