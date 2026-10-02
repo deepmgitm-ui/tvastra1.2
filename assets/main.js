@@ -1182,7 +1182,8 @@ $(document).ready( function() {
     /****** Search popup ******/
     initSearchPopup();
     function initSearchPopup(argument) {
-        $('[data-minisearch-trigger]').on('click',function(){
+        $('[data-minisearch-trigger]').on('click',function(e){
+            e.preventDefault();
             $('body').toggleClass("active-search");
             setTimeout(function(){
             $('[data-search-input]').focus();
@@ -1690,6 +1691,27 @@ $(document).ready( function() {
         setTimeout(function() {
             $('body').removeClass('navbar-open');
         },500);
+    });
+    $(document).on('click.tvastraMobileNavFix', '.navbar-toggler.toggle-mobile', function () {
+        var button = this;
+        var beforeExpanded = button.getAttribute('aria-expanded') === 'true';
+        window.setTimeout(function () {
+            var nav = document.getElementById('navbarNav');
+            if (!nav) return;
+
+            var afterExpanded = button.getAttribute('aria-expanded') === 'true';
+            var navIsShown = nav.classList.contains('show');
+
+            // If Bootstrap did not react to the click, provide a small fallback.
+            if (afterExpanded === beforeExpanded && navIsShown === beforeExpanded) {
+                afterExpanded = !beforeExpanded;
+                nav.classList.toggle('show', afterExpanded);
+                button.setAttribute('aria-expanded', afterExpanded ? 'true' : 'false');
+            }
+
+            $('body').toggleClass('navbar-collapse-show', afterExpanded);
+            $('body').toggleClass('navbar-open', afterExpanded);
+        }, 80);
     });
     $('.menu-close, .menu-overlay').on('click', function() {
         $('.navbar-toggler').trigger('click');
