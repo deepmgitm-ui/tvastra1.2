@@ -886,12 +886,7 @@ $(document).ready( function() {
         setCookie('announcementbarclosed', 1, '30');
     });
     
-    /****** Open minicart ******/
-    $(document).on('click', '[cart-icon-bubble], .sticky-menu-item.sticky-cart', function(event) {
-        event.preventDefault();
-        const cartNotification = document.querySelector('cart-notification');
-        cartNotification?.open();
-    });
+    /* Razorpay Magic Sidecart owns the cart icon interaction. */
     
     /****** Close minicart ******/
     $(document).on('click', 'cart-notification', function(event) {
