@@ -969,51 +969,45 @@
 {% render 'magicSidecartScript', email: customer.email, phone: customer.phone %}
 <script>
 (function () {
-  if (window.__tvastraDirectMagicCartV1) return;
-  window.__tvastraDirectMagicCartV1 = true;
+  if (window.__tvastraDirectMagicCartV2) return;
+  window.__tvastraDirectMagicCartV2 = true;
 
   function openMagicCart() {
-    if (
-      window.RazorpayMagic &&
-      window.RazorpayMagic.Cart &&
-      typeof window.RazorpayMagic.Cart.open === 'function'
-    ) {
-      window.RazorpayMagic.Cart.open();
-      return true;
+    try {
+      if (
+        window.RazorpayMagic &&
+        window.RazorpayMagic.Cart &&
+        typeof window.RazorpayMagic.Cart.open === 'function'
+      ) {
+        window.RazorpayMagic.Cart.open();
+        return true;
+      }
+    } catch (error) {
+      console.error('[Tvastra] Razorpay Magic Cart error:', error);
     }
     return false;
   }
 
-  function bind(id) {
-    var button = document.getElementById(id);
-    if (!button || button.dataset.magicCartBound === 'true') return;
+  document.addEventListener('click', function (e) {
+    var cartButton = e.target && e.target.closest
+      ? e.target.closest('.cart-icon-bubble')
+      : null;
 
-    button.dataset.magicCartBound = 'true';
+    if (!cartButton) return;
 
-    button.addEventListener('click', function (e) {
-      e.preventDefault();
+    e.preventDefault();
 
-      if (openMagicCart()) return;
+    if (openMagicCart()) return;
 
-      var attempts = 0;
-      var retry = window.setInterval(function () {
-        attempts += 1;
+    var attempts = 0;
+    var retry = window.setInterval(function () {
+      attempts += 1;
 
-        if (openMagicCart() || attempts >= 10) {
-          window.clearInterval(retry);
-        }
-      }, 100);
-    });
-  }
-
-  function bindAll() {
-    bind('custom-cart-btn');
-    bind('custom-cart-btn-mobile');
-  }
-
-  bindAll();
-  document.addEventListener('DOMContentLoaded', bindAll);
-  window.addEventListener('load', bindAll);
+      if (openMagicCart() || attempts >= 10) {
+        window.clearInterval(retry);
+      }
+    }, 100);
+  }, true);
 })();
 </script>
 
