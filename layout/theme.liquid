@@ -1026,8 +1026,49 @@
 
 <script>
 (function () {
-  if (window.__tvastraMagicCartBridgeV1) return;
-  window.__tvastraMagicCartBridgeV1 = true;
+  if (window.__tvastraMagicCartBridgeV2) return;
+  window.__tvastraMagicCartBridgeV2 = true;
+
+  function tryOpenMagicCart(attempt) {
+    try {
+      if (
+        window.RazorpayMagic &&
+        window.RazorpayMagic.Cart &&
+        typeof window.RazorpayMagic.Cart.open === 'function'
+      ) {
+        window.RazorpayMagic.Cart.open();
+        return true;
+      }
+    } catch (error) {
+      console.error('[Tvastra] Razorpay Magic Cart open failed:', error);
+    }
+
+    if (attempt < 4) {
+      window.setTimeout(function () {
+        tryOpenMagicCart(attempt + 1);
+      }, 80 * (attempt + 1));
+    } else {
+      console.error('[Tvastra] Razorpay Magic Cart API is not ready.');
+    }
+
+    return false;
+  }
+
+  function closeLegacyCart() {
+    var drawer = document.querySelector('cart-notification');
+
+    if (drawer && typeof drawer.close === 'function') {
+      drawer.close();
+      return;
+    }
+
+    var panel = document.getElementById('cart-notification');
+    if (panel) {
+      panel.classList.remove('active');
+      document.body.classList.remove('minicart-active');
+      document.body.style.marginRight = '0px';
+    }
+  }
 
   document.addEventListener('click', function (event) {
     var trigger = event.target && event.target.closest
@@ -1036,28 +1077,14 @@
 
     if (!trigger) return;
 
-    // Keep the click untouched so Razorpay Magic Cart receives it exactly as normal.
-    // The cart link itself is href="#" on storefront pages, so it cannot navigate to /cart.
+    // This cart button belongs exclusively to Razorpay Magic Cart.
+    // Prevent the theme from navigating to Shopify /cart.
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
 
-    // Hongo's legacy cart drawer must never remain visible from this click.
-    var closeLegacyCart = function () {
-      var drawer = document.querySelector('cart-notification');
-      if (drawer && typeof drawer.close === 'function') {
-        drawer.close();
-        return;
-      }
-
-      var panel = document.getElementById('cart-notification');
-      if (panel) {
-        panel.classList.remove('active');
-        document.body.classList.remove('minicart-active');
-        document.body.style.marginRight = '0px';
-      }
-    };
-
-    window.setTimeout(closeLegacyCart, 0);
-    window.setTimeout(closeLegacyCart, 80);
-    window.setTimeout(closeLegacyCart, 250);
+    closeLegacyCart();
+    tryOpenMagicCart(0);
   }, true);
 })();
 </script>
