@@ -886,8 +886,10 @@ $(document).ready( function() {
         setCookie('announcementbarclosed', 1, '30');
     });
     
-    /* Razorpay Magic Sidecart owns the cart icon interaction. */
-    (function () {
+    /* Razorpay Magic Sidecart owns the cart icon interaction.
+       Register after Razorpay's deferred sidecart script so Razorpay receives
+       the click first; then cancel the fallback /cart navigation. */
+    window.setTimeout(function () {
         document.addEventListener('click', function (event) {
             const target = event.target && event.target.closest
                 ? event.target.closest('[data-tvastra-cart-trigger], [cart-icon-bubble], .sticky-menu-item.sticky-cart a')
@@ -895,11 +897,9 @@ $(document).ready( function() {
 
             if (!target || window.location.pathname === (window.routes && window.routes.cart_url)) return;
 
-            /* Prevent Shopify's /cart navigation from winning. Razorpay's sidecart
-               listener still receives the same event and can open its cart. */
             event.preventDefault();
-        }, true);
-    })();
+        });
+    }, 0);
     
     /****** Close minicart ******/
     $(document).on('click', 'cart-notification', function(event) {
