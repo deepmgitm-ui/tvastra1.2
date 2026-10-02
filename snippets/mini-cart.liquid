@@ -1,6 +1,6 @@
 {%- if settings.header_layout == 'style-1' -%}
 	<div class="cart {{ settings.menu_text_case }}">
-	  <a href="#" onclick="event.preventDefault(); if (window.RazorpayMagic && window.RazorpayMagic.Cart) { window.RazorpayMagic.Cart.open(); } else { console.error('Razorpay Magic Cart script is not initialized yet.'); } return false;" class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" aria-label="cart">
+	  <a href="javascript:void(0)" onclick="event.preventDefault(); if (window.RazorpayMagic && window.RazorpayMagic.Cart) { window.RazorpayMagic.Cart.open(); } else { console.error('Razorpay Magic Cart script is not initialized yet.'); } return false;" class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" aria-label="cart">
 	  <i class="feather-shopping-bag"></i><span data-cart-count class="count {% if cart.item_count == 0 %}d-none{% endif %}">{{ cart.item_count }}</span>
 	  {%- if settings.show_icon == false -%}<span class="{% if settings.header_style == "center-navigation" %}d-none d-xxl-inline-block{% else %}d-none d-xl-inline-block{% endif %}">{{ 'sections.header.cart' | t }}</span>{%- endif -%}
 	  </a>
