@@ -7,7 +7,7 @@
           {%- if section.settings.show_home_label == true -%}
             <span>{{ 'sections.mobile_sticky_menu.home_label' | t }}</span>
           {%- endif -%}
-        </a>
+        </button>
       </div>
     {%- endif -%}
     {%- if section.settings.show_search_icon -%}
@@ -55,7 +55,7 @@
     {%- endif -%}
     {%- if section.settings.show_cart_icon -%}
       <div class="sticky-menu-item sticky-cart">
-        <a href="#" class="cart-icon-bubble" cart-icon-bubble aria-label="cart">
+        <button type="button" id="custom-cart-btn-mobile" class="cart-icon-bubble" cart-icon-bubble aria-label="cart">
           <span class="icon-wrap position-relative">
             <i class="feather-shopping-bag"></i>
             <span data-cart-count class="count {% if cart.item_count == 0 %}d-none{% endif %}">{{ cart.item_count }}</span>
