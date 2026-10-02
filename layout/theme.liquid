@@ -1036,9 +1036,8 @@
 
     if (!trigger) return;
 
-    // Never allow the theme's native anchor navigation to /cart.
-    // Do not stop propagation: Razorpay Magic Cart must receive the same click.
-    event.preventDefault();
+    // Keep the click untouched so Razorpay Magic Cart receives it exactly as normal.
+    // The cart link itself is href="#" on storefront pages, so it cannot navigate to /cart.
 
     // Hongo's legacy cart drawer must never remain visible from this click.
     var closeLegacyCart = function () {
