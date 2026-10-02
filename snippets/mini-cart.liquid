@@ -1,6 +1,6 @@
 {%- if settings.header_layout == 'style-1' -%}
 	<div class="cart {{ settings.menu_text_case }}">
-	  <a {% if template != 'cart' %}cart-icon-bubble{% endif %} class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" href="#" rel="noopener nofollow" aria-label="cart">
+	  <a {% if template != 'cart' %}cart-icon-bubble{% endif %} class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" href="#" rel="noopener nofollow" aria-label="cart"{% if template != 'cart' %} onclick="event.preventDefault(); event.stopImmediatePropagation(); return false;"{% endif %}>
 	  <i class="feather-shopping-bag"></i><span data-cart-count class="count {% if cart.item_count == 0 %}d-none{% endif %}">{{ cart.item_count }}</span>
 	  {%- if settings.show_icon == false -%}<span class="{% if settings.header_style == "center-navigation" %}d-none d-xxl-inline-block{% else %}d-none d-xl-inline-block{% endif %}">{{ 'sections.header.cart' | t }}</span>{%- endif -%}
 	  </a>
