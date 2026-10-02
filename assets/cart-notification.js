@@ -27,19 +27,10 @@ class CartNotification extends HTMLElement {
         });
     }
     open(autoClose) {
-        var _this = this;
-
-        if (
-          window.tvastraSuppressThemeMiniCartUntil &&
-          Date.now() < window.tvastraSuppressThemeMiniCartUntil
-        ) {
-          this.close();
-          return;
-        }
-
-        this.notification.classList.add('active');
-        document.body.classList.add('minicart-active');
-        document.body.style.marginRight = (window.innerWidth - $(window).width())  + 'px';
+        // Theme shopping cart drawer is intentionally disabled.
+        // Razorpay Magic Cart owns the cart experience.
+        this.close();
+        return;
     }
     close() {
         $('.cart-item__error-text').empty();
