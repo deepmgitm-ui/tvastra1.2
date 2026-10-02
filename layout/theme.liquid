@@ -214,7 +214,6 @@
       {%- if template.name == 'collection' -%}
         <script src="{{ 'collection-load-more.js' | asset_url }}" defer="defer"></script>
       {%- endif -%}
-      <script src="{{ 'cart-notification.js' | asset_url | split: '?' | first }}?v=cart-premium-v9" defer="defer"></script>
       {%- if settings.show_compare == true -%}
   <script src="{{ 'compare.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
@@ -1023,64 +1022,57 @@
 
 
 {% render 'magicSidecartScript', email: customer.email, phone: customer.phone %}
-
 <script>
 (function () {
-  if (window.__tvastraMagicCartBridgeV3) return;
-  window.__tvastraMagicCartBridgeV3 = true;
-
-  function closeLegacyCart() {
-    var drawer = document.querySelector('cart-notification');
-    if (drawer && typeof drawer.close === 'function') {
-      drawer.close();
-      return;
-    }
-
-    var panel = document.getElementById('cart-notification');
-    if (panel) {
-      panel.classList.remove('active');
-      document.body.classList.remove('minicart-active');
-      document.body.style.marginRight = '0px';
-    }
-  }
+  if (window.__tvastraDirectMagicCartV1) return;
+  window.__tvastraDirectMagicCartV1 = true;
 
   function openMagicCart() {
-    try {
-      if (
-        window.RazorpayMagic &&
-        window.RazorpayMagic.Cart &&
-        typeof window.RazorpayMagic.Cart.open === 'function'
-      ) {
-        window.RazorpayMagic.Cart.open();
-        return true;
-      }
-    } catch (error) {
-      console.error('[Tvastra] Magic Cart API error:', error);
+    if (
+      window.RazorpayMagic &&
+      window.RazorpayMagic.Cart &&
+      typeof window.RazorpayMagic.Cart.open === 'function'
+    ) {
+      window.RazorpayMagic.Cart.open();
+      return true;
     }
     return false;
   }
 
-  document.addEventListener('click', function (event) {
-    var trigger = event.target && event.target.closest
-      ? event.target.closest('.cart-icon-bubble')
-      : null;
+  function bind(id) {
+    var button = document.getElementById(id);
+    if (!button || button.dataset.magicCartBound === 'true') return;
 
-    if (!trigger) return;
+    button.dataset.magicCartBound = 'true';
 
-    // The cart link is intentionally href="#". Prevent only the browser's
-    // default navigation; do not stop propagation so Razorpay can also
-    // receive the same click.
-    event.preventDefault();
+    button.addEventListener('click', function (e) {
+      e.preventDefault();
 
-    closeLegacyCart();
+      if (openMagicCart()) return;
 
-    // Prefer Razorpay's direct Magic Cart API when it is available.
-    // If Razorpay has not finished initializing yet, its own click handler
-    // remains free to receive this same event.
-    openMagicCart();
-  }, true);
+      var attempts = 0;
+      var retry = window.setInterval(function () {
+        attempts += 1;
+
+        if (openMagicCart() || attempts >= 10) {
+          window.clearInterval(retry);
+        }
+      }, 100);
+    });
+  }
+
+  function bindAll() {
+    bind('custom-cart-btn');
+    bind('custom-cart-btn-mobile');
+  }
+
+  bindAll();
+  document.addEventListener('DOMContentLoaded', bindAll);
+  window.addEventListener('load', bindAll);
 })();
 </script>
+
+
 
 
 </body>
