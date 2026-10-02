@@ -887,6 +887,19 @@ $(document).ready( function() {
     });
     
     /* Razorpay Magic Sidecart owns the cart icon interaction. */
+    (function () {
+        document.addEventListener('click', function (event) {
+            const target = event.target && event.target.closest
+                ? event.target.closest('[data-tvastra-cart-trigger], [cart-icon-bubble], .sticky-menu-item.sticky-cart a')
+                : null;
+
+            if (!target || window.location.pathname === (window.routes && window.routes.cart_url)) return;
+
+            /* Prevent Shopify's /cart navigation from winning. Razorpay's sidecart
+               listener still receives the same event and can open its cart. */
+            event.preventDefault();
+        }, true);
+    })();
     
     /****** Close minicart ******/
     $(document).on('click', 'cart-notification', function(event) {
