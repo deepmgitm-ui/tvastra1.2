@@ -7,7 +7,7 @@
 	</div>
 {%- else -%}
 	<div class="cart alt-font {{ settings.menu_text_case }}">
-	  <a href="#" onclick="event.preventDefault(); if (window.RazorpayMagic && window.RazorpayMagic.Cart) { window.RazorpayMagic.Cart.open(); } else { console.error('Razorpay Magic Cart script is not initialized yet.'); } return false;" class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" aria-label="cart">
+	  <a href="javascript:void(0)" onclick="event.preventDefault(); if (window.RazorpayMagic && window.RazorpayMagic.Cart) { window.RazorpayMagic.Cart.open(); } else { console.error('Razorpay Magic Cart script is not initialized yet.'); } return false;" class="icon-bubble cart-icon-bubble position-relative{% if cart.item_count == 0 %} no-count{% endif %}" aria-label="cart">
 	  	<div class="cart-icon">
 	  		<i class="bi bi-bag-plus"></i><span data-cart-count class="count {% if cart.item_count == 0 %}d-none{% endif %}">{{ cart.item_count }}</span>
 	  	</div>
