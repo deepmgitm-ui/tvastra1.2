@@ -1716,12 +1716,18 @@ $(document).ready( function() {
     $('.menu-close, .menu-overlay').on('click', function() {
         $('.navbar-toggler').trigger('click');
     });
-    $('.parent').on('click', function(e) {
-            e.preventDefault();
-        if ($(window).width() < 1200) {
-            $(this).parent().next('.menu-lable').remove();
-            $(this).parent().next('.sub-menu, .child-submenu').addClass('open');
-            $(this).parents().closest('.open').parent().addClass('subopen');
+    $(document).on('click', '#navbarNav .parent', function(e) {
+        if ($(window).width() >= 1200) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var $item = $(this).closest('li');
+        var $submenu = $item.children('.sub-menu, .child-submenu').first();
+        if (!$submenu.length) {
+            $submenu = $(this).closest('.nav-item').children('.sub-menu').first();
+        }
+        if ($submenu.length) {
+            $submenu.addClass('open');
+            $item.addClass('subopen');
             $(".mobile-language-currency").addClass("menu-open");
             $("#navbarNav .navbar-nav, #navbarNav .vertical-navbar-list").addClass("child-sub-open");
         }
