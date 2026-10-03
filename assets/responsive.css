@@ -4204,3 +4204,17 @@
     font-size: 22px !important;
   }
 }
+
+/* Tvastra mobile navigation: keep the drawer above page content. */
+@media (max-width: 1199px) {
+  body.navbar-open header {
+    position: relative;
+    z-index: 10000;
+  }
+  body.navbar-open #navbarNav {
+    z-index: 10002;
+  }
+  body.navbar-open .menu-overlay {
+    z-index: 10001;
+  }
+}
