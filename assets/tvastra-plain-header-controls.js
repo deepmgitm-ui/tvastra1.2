@@ -52,6 +52,64 @@
     }
   }
 
+  function initInsertedMenuWidgets(scope) {
+    if (!scope || typeof window.Swiper === 'undefined') return;
+
+    scope.querySelectorAll('.swiper[data-slider-options]').forEach(function (swiperElement) {
+      if (swiperElement.swiper) return;
+
+      try {
+        var rawOptions = swiperElement.getAttribute('data-slider-options');
+        if (!rawOptions) return;
+        var options = JSON.parse(rawOptions);
+        new Swiper(swiperElement, options);
+      } catch (error) {
+        console.warn('Tvastra mobile menu slider init failed', error);
+      }
+    });
+  }
+
+  function loadAjaxSubmenu(navItem) {
+    return new Promise(function (resolve) {
+      var wrapper = navItem && navItem.querySelector(':scope > .dropdown-menu > .sub-menu-wrapper');
+      var searchUrl = navItem && navItem.getAttribute('data-searchUrl');
+
+      if (!wrapper || !searchUrl) {
+        resolve(false);
+        return;
+      }
+
+      if (wrapper.children.length > 0 || wrapper.innerHTML.trim() !== '') {
+        resolve(true);
+        return;
+      }
+
+      var loader = navItem.querySelector(':scope > .dropdown-menu .show-loader');
+      if (loader) loader.style.display = '';
+
+      fetch(searchUrl, {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(function (response) {
+          if (!response.ok) throw new Error('Menu request failed: ' + response.status);
+          return response.text();
+        })
+        .then(function (html) {
+          wrapper.innerHTML = html;
+          if (loader) loader.style.display = 'none';
+          initInsertedMenuWidgets(wrapper);
+          resolve(true);
+        })
+        .catch(function (error) {
+          if (loader) loader.style.display = 'none';
+          console.error('Tvastra mobile menu load failed', error);
+          resolve(false);
+        });
+    });
+  }
+
   function openSubmenuFromArrow(arrow) {
     if (!isMobileNav()) return false;
 
@@ -71,19 +129,35 @@
 
     if (!submenu) return false;
 
-    submenu.classList.add('open');
-    item.classList.add('subopen');
+    var navItem = arrow.closest('#navbarNav > .navbar-nav > .nav-item, #navbarNav .navbar-nav > .nav-item');
+    var ajaxWrapper = navItem && navItem.querySelector(':scope > .dropdown-menu > .sub-menu-wrapper');
+    var shouldWaitForAjax = !!ajaxWrapper && ajaxWrapper.children.length === 0 && ajaxWrapper.innerHTML.trim() === '';
 
-    document.querySelectorAll('#navbarNav .navbar-nav, #navbarNav .vertical-navbar-list').forEach(function (list) {
-      list.classList.add('child-sub-open');
-    });
-    document.querySelectorAll('#navbarNav .mobile-language-currency').forEach(function (element) {
-      element.classList.add('menu-open');
-    });
+    var open = function () {
+      submenu.classList.add('open');
+      item.classList.add('subopen');
+
+      if (navItem) navItem.classList.add('active');
+
+      document.querySelectorAll('#navbarNav .navbar-nav, #navbarNav .vertical-navbar-list').forEach(function (list) {
+        list.classList.add('child-sub-open');
+      });
+      document.querySelectorAll('#navbarNav .mobile-language-currency').forEach(function (element) {
+        element.classList.add('menu-open');
+      });
+    };
+
+    if (shouldWaitForAjax) {
+      if (navItem) navItem.classList.add('active');
+      loadAjaxSubmenu(navItem).then(function (loaded) {
+        if (loaded) open();
+      });
+    } else {
+      open();
+    }
 
     return true;
   }
-
   function closeSubmenuFromBack(backButton) {
     var submenu = backButton.closest('.sub-menu, .child-submenu');
     if (!submenu) return false;
