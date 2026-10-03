@@ -1,6 +1,6 @@
 /*
  * TVASTRA - isolated mobile navigation/search fix.
- * Keeps the existing cart/Magic Cart implementation untouched.
+ * Keeps the existing Razorpay Magic Cart/cart implementation untouched.
  */
 (function () {
   if (window.__tvastraNavigationSearchFix) return;
@@ -22,7 +22,23 @@
     var nav = document.querySelector(selector);
     if (!nav) return;
 
-    var isOpen = nav.classList.contains('show') || document.body.classList.contains('navbar-collapse-show');
+    var isOpen = nav.classList.contains('show');
+
+    // Prefer Bootstrap's real collapse API so its state/events stay in sync.
+    try {
+      if (window.bootstrap && window.bootstrap.Collapse) {
+        var collapse = window.bootstrap.Collapse.getOrCreateInstance(nav, { toggle: false });
+        if (isOpen) {
+          collapse.hide();
+        } else {
+          collapse.show();
+        }
+        button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        return;
+      }
+    } catch (error) {
+      // Fall back to the theme's class-based mobile drawer below.
+    }
 
     if (isOpen) {
       closeMobileMenu();
@@ -36,13 +52,17 @@
 
   function toggleSearch() {
     var body = document.body;
-    body.classList.toggle('active-search');
+    var opening = !body.classList.contains('active-search');
 
-    if (body.classList.contains('active-search')) {
+    if (opening) {
+      closeMobileMenu();
+      body.classList.add('active-search');
       window.setTimeout(function () {
         var input = document.querySelector('#minisearch-popup [data-search-input], #minisearch-popup input[name="q"]');
         if (input) input.focus();
       }, 80);
+    } else {
+      body.classList.remove('active-search');
     }
   }
 
