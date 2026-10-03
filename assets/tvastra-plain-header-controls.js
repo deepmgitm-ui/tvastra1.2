@@ -148,10 +148,8 @@
     };
 
     if (shouldWaitForAjax) {
-      if (navItem) navItem.classList.add('active');
-      loadAjaxSubmenu(navItem).then(function (loaded) {
-        if (loaded) open();
-      });
+      open();
+      loadAjaxSubmenu(navItem);
     } else {
       open();
     }
