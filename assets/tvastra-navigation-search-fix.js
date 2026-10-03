@@ -9,7 +9,20 @@
   function closeMobileMenu() {
     var nav = document.querySelector('#navbarNav');
     var body = document.body;
-    if (nav) nav.classList.remove('show');
+
+    if (nav) {
+      try {
+        if (window.bootstrap && window.bootstrap.Collapse) {
+          var collapse = window.bootstrap.Collapse.getOrCreateInstance(nav, { toggle: false });
+          collapse.hide();
+        } else {
+          nav.classList.remove('show');
+        }
+      } catch (error) {
+        nav.classList.remove('show');
+      }
+    }
+
     body.classList.remove('navbar-collapse-show', 'navbar-open');
     var togglers = document.querySelectorAll('.navbar-toggler.toggle-mobile');
     togglers.forEach(function (button) {
