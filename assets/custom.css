@@ -4814,3 +4814,20 @@ cart-notification.active {
   -webkit-line-clamp: 2 !important;
   line-height: 1.4em !important;
 }
+
+
+/* Keep every Simple collection card's product image frame the same size.
+   Contain preserves the full garment when source photo ratios differ. */
+.shop-simple .product-box .product-image image-srcset.res-image {
+  --aspect-ratio: 0.75 !important;
+  aspect-ratio: 3 / 4 !important;
+  background-color: #f7f7f7 !important;
+}
+
+.shop-simple .product-box .product-image image-srcset.res-image > img {
+  object-fit: contain !important;
+}
+
+.shop-simple .product-box .product-image .tvastra-product-card-video {
+  aspect-ratio: 3 / 4 !important;
+}
