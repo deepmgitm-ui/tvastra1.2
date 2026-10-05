@@ -3313,6 +3313,7 @@ function VerticalMenu() {
 }
 function MainMenuDataFatch(searchURL) {
   const submentElement = document.querySelector('#navbarNav .nav-item.active .sub-menu-wrapper');
+  if (!submentElement) return;
   const submentLenth = submentElement.childNodes.length;
   if (submentLenth == 0 ){
     jQuery.ajax({
