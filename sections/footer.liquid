@@ -347,6 +347,68 @@
     }
   {%- endif -%}  
 </style>
+<script>
+  (function () {
+    if (window.__tvastraFooterAccordion) return;
+    window.__tvastraFooterAccordion = true;
+
+    function isMobile() {
+      return window.matchMedia('(max-width: 767.98px)').matches;
+    }
+
+    function syncFooterMenus() {
+      document.querySelectorAll('footer .footer-block.mobile-wrapper').forEach(function (block) {
+        var heading = block.querySelector(':scope > .mobile-toggle');
+        var list = heading && heading.nextElementSibling;
+        if (!heading || !list || list.tagName.toLowerCase() !== 'ul') return;
+
+        if (isMobile()) {
+          if (!heading.classList.contains('menu-open')) {
+            list.style.display = 'none';
+          }
+        } else {
+          heading.classList.remove('menu-open');
+          list.style.display = '';
+        }
+      });
+    }
+
+    document.addEventListener('click', function (event) {
+      if (!isMobile()) return;
+
+      var target = event.target;
+      if (!target || !target.closest) return;
+
+      var heading = target.closest('footer .footer-block.mobile-wrapper > .mobile-toggle');
+      if (!heading) return;
+
+      var list = heading.nextElementSibling;
+      if (!list || list.tagName.toLowerCase() !== 'ul') return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      var opening = !heading.classList.contains('menu-open');
+      heading.classList.toggle('menu-open', opening);
+
+      if (opening) {
+        list.style.display = 'block';
+      } else {
+        list.style.display = 'none';
+      }
+    }, true);
+
+    window.addEventListener('resize', syncFooterMenus, { passive: true });
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', syncFooterMenus, { once: true });
+    } else {
+      syncFooterMenus();
+    }
+  })();
+</script>
+
 {% schema %}
 {
   "name": "Footer",
