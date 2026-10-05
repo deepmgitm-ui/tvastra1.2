@@ -278,7 +278,7 @@
           {%- assign megamenu-content = megamenu-content | strip -%}
           {%- assign bottom-banner-content = bottom-banner-content | strip -%}
           <li class="nav-item megamenu-item nav-type-megamenu" data-searchUrl="{{routes.search_url}}?q={{block.id}}&view=main_submenu">
-            <a class="nav-link {% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }}" href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none"></span></a>{%- if block.settings.text contains '[' -%}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }}; ">{{ settings[parants_label] }}</span>{%- endif -%}
+            <a class="nav-link {% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }}" href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none nav-parent-arrow"></span></a>{%- if block.settings.text contains '[' -%}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }}; ">{{ settings[parants_label] }}</span>{%- endif -%}
             {%- if megamenu-content != blank or bottom-banner-content != blank -%}
               <div class="dropdown-menu sub-menu megamenu">
                 {%- unless settings.enable_ajex_data == true -%}
@@ -310,7 +310,7 @@
         {%- when 'simple-dropdown' -%}
           <li class="nav-item nav-type-dropdown">
             {%- assign sublinks = linklists[block.settings.simple_menu].links -%}
-            <a class="nav-link{% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }} " href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}{% if sublinks.size > 0 %}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none"></span>{% endif %}</a>{%- if block.settings.text contains '[' -%}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }};">{{ settings[parants_label] }}</span>{%- endif -%}
+            <a class="nav-link{% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }} " href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}{% if sublinks.size > 0 %}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none nav-parent-arrow"></span>{% endif %}</a>{%- if block.settings.text contains '[' -%}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }};">{{ settings[parants_label] }}</span>{%- endif -%}
             {%- if sublinks.size > 0 -%}
               <ul class="simple-dropdown sub-menu">
                 {%- comment -%} Menu Back {%- endcomment -%}
@@ -387,7 +387,7 @@
           {%- endcapture -%}
           {%- assign collection-menu = collection-menu | strip -%}
           <li class="nav-item megamenu-item nav-type-collection" data-searchUrl="{{routes.search_url}}?q={{block.id}}&view=main_submenu">
-            <a class="nav-link{% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }}" href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none"></span></a>{%- if block.settings.text contains '[' -%}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }}; ">{{ settings[parants_label] }}</span>{%- endif -%}
+            <a class="nav-link{% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }}" href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none nav-parent-arrow"></span></a>{%- if block.settings.text contains '[' -%}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }}; ">{{ settings[parants_label] }}</span>{%- endif -%}
             {%- if collection-menu != blank -%}
               <div class="dropdown-menu sub-menu megamenu collection-menu">
                 {%- unless settings.enable_ajex_data == true -%}
@@ -408,7 +408,7 @@
           </li>
         {%- when 'custom-html' -%}
           <li class="nav-item custom-html megamenu-item">
-            <a class="nav-link{% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }}" href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}{% if block.settings.menu_custom_html != blank %}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none"></span>{% endif %}</a>{% if block.settings.text contains '[' %}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }}; ">{{ settings[parants_label] }}</span>{% endif %}
+            <a class="nav-link{% if block.settings.url == request.path %} active{% endif %} {{ settings.menu_text_case }}" href="{{ block.settings.url }}" aria-label="link">{{ block.settings.text | escape | split: '[' | first }}{% if block.settings.menu_custom_html != blank %}<span class="feather-chevron-right parent d-flex align-items-center d-xl-none nav-parent-arrow"></span>{% endif %}</a>{% if block.settings.text contains '[' %}<span class="menu-lable parent-lable" style=" background-color: {{ settings[parants_bgColor] }}; color: {{ settings[parants_color] }}; ">{{ settings[parants_label] }}</span>{% endif %}
             {%- if block.settings.menu_custom_html != blank -%}
               <div class="dropdown-menu sub-menu megamenu">
                 <div class="{% if block.settings.megamenu_fullwidth == true %}container-fluid{% else %}container{% endif %}">
