@@ -9,6 +9,23 @@
     return window.matchMedia('(max-width: 1199.98px)').matches;
   }
 
+  function closeDesktopSubmenus() {
+    document.querySelectorAll('#navbarNav .nav-item.tvastra-desktop-open').forEach(function (item) {
+      item.classList.remove('tvastra-desktop-open');
+    });
+  }
+
+  function openDesktopMenu(navItem) {
+    if (!navItem) return false;
+
+    document.querySelectorAll('#navbarNav .nav-item.tvastra-desktop-open').forEach(function (item) {
+      if (item !== navItem) item.classList.remove('tvastra-desktop-open');
+    });
+
+    navItem.classList.toggle('tvastra-desktop-open');
+    return navItem.classList.contains('tvastra-desktop-open');
+  }
+
   function clearOpenSubmenus(panel) {
     if (!panel) return;
     panel.querySelectorAll('.sub-menu.open, .child-submenu.open').forEach(function (submenu) {
@@ -197,11 +214,32 @@
     }
 
     var parentArrow = target.closest('#navbarNav .parent');
-    if (parentArrow && isMobileNav()) {
-      if (openSubmenuFromArrow(parentArrow)) {
+    if (parentArrow) {
+      if (isMobileNav()) {
+        if (openSubmenuFromArrow(parentArrow)) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+        }
+      } else if (parentArrow.classList.contains('nav-parent-arrow')) {
+        var desktopItem = parentArrow.closest('.nav-item');
+
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation();
+
+        if (desktopItem) {
+          var desktopAjaxWrapper = desktopItem.querySelector(':scope > .dropdown-menu > .sub-menu-wrapper');
+          var desktopNeedsAjax = !!desktopAjaxWrapper &&
+            desktopAjaxWrapper.children.length === 0 &&
+            desktopAjaxWrapper.innerHTML.trim() === '';
+
+          openDesktopMenu(desktopItem);
+
+          if (desktopNeedsAjax) {
+            loadAjaxSubmenu(desktopItem);
+          }
+        }
       }
       return;
     }
@@ -254,9 +292,20 @@
     event.preventDefault();
   }, false);
 
+  document.addEventListener('click', function (event) {
+    if (isMobileNav()) return;
+    var target = event.target;
+    if (!target || !target.closest) return;
+
+    if (!target.closest('#navbarNav .nav-item.tvastra-desktop-open')) {
+      closeDesktopSubmenus();
+    }
+  }, false);
+
   document.addEventListener('keydown', function (event) {
     if (event.key !== 'Escape') return;
     setMenu(false);
     setSearch(false);
+    closeDesktopSubmenus();
   });
 })();
