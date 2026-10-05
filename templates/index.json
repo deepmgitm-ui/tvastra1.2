@@ -217,6 +217,18 @@
     "coverflow_slider_FgPwEH": {
       "type": "coverflow-slider",
       "blocks": {
+        "slide_hcLAdF": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/olive1002.2.jpg",
+            "product_name": "Bottom",
+            "badge": "",
+            "title": "",
+            "subtitle": "",
+            "button_label": "EXPLORE",
+            "link": "shopify://collections/botttom-all"
+          }
+        },
         "slide_eHR7Ck": {
           "type": "slide",
           "settings": {
@@ -279,6 +291,7 @@
         }
       },
       "block_order": [
+        "slide_hcLAdF",
         "slide_eHR7Ck",
         "slide_NPjeaw",
         "slide_AqRAVF",
