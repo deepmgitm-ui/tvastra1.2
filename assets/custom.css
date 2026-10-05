@@ -4831,3 +4831,71 @@ cart-notification.active {
 .shop-simple .product-box .product-image .tvastra-product-card-video {
   aspect-ratio: 3 / 4 !important;
 }
+
+
+/* Final collection-grid card sizing: identical photo and details areas on every card. */
+#main-collection-product-grid > .product-box {
+  display: flex !important;
+  align-self: stretch !important;
+}
+
+#main-collection-product-grid > .product-box > .box-inner {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#main-collection-product-grid .product-box .product-image image-srcset.res-image {
+  --aspect-ratio: 0.75 !important;
+  aspect-ratio: 3 / 4 !important;
+  background: #f7f7f7 !important;
+}
+
+#main-collection-product-grid .product-box .product-image image-srcset.res-image > img {
+  object-fit: contain !important;
+}
+
+#main-collection-product-grid .product-box .product-image .tvastra-product-card-video {
+  aspect-ratio: 3 / 4 !important;
+}
+
+#main-collection-product-grid .product-box > .box-inner > .product-footer {
+  display: flex !important;
+  flex: 0 0 148px !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  height: 148px !important;
+  overflow: hidden !important;
+}
+
+#main-collection-product-grid .product-box .product-footer .product-title {
+  display: -webkit-box !important;
+  min-height: 2.8em !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  line-height: 1.4em !important;
+}
+
+#main-collection-product-grid .product-box .product-footer .product-title-wrapper {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#main-collection-product-grid .product-box .product-footer .custom-card-swatch-dots,
+#main-collection-product-grid .product-box .product-footer .custom-swatch-wrapper,
+#main-collection-product-grid .product-box .product-footer .gs-card {
+  min-height: 34px !important;
+  max-height: 34px !important;
+  overflow: hidden !important;
+}
+
+#main-collection-product-grid .product-box .product-footer > .price,
+#main-collection-product-grid .product-box .product-footer > .price-wrapper,
+#main-collection-product-grid .product-box .product-footer > .price-box {
+  flex: 0 0 auto !important;
+  margin-top: auto !important;
+}
