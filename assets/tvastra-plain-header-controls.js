@@ -72,6 +72,31 @@
     });
   }
 
+  function initMobileFooterToggle() {
+    /* Footer accordion is delegated so it also works after Shopify section
+       reloads. Only intercept the footer headings on small screens. */
+    document.addEventListener('click', function (event) {
+      if (!window.matchMedia('(max-width: 767.98px)').matches) return;
+
+      var target = event.target;
+      if (!target || !target.closest) return;
+
+      var heading = target.closest('footer .footer-block .mobile-toggle');
+      if (!heading) return;
+
+      var list = heading.nextElementSibling;
+      if (!list || list.tagName.toLowerCase() !== 'ul') return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      var isOpen = heading.classList.contains('menu-open');
+      heading.classList.toggle('menu-open', !isOpen);
+      list.style.display = isOpen ? 'none' : 'block';
+    }, true);
+  }
+
   function setSearch(open) {
     document.body.classList.toggle('active-search', open);
     if (open) {
