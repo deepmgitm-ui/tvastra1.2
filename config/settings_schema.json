@@ -207,7 +207,7 @@
         "type": "checkbox",
         "id": "enable_ajex_data",
         "label": "Enable Ajax megamenu",
-        "default": true
+        "default": false
       },
       {
         "type": "checkbox",
