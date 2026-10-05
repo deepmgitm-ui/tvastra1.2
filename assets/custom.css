@@ -4779,3 +4779,38 @@ cart-notification.active {
     transform: rotate(90deg);
   }
 }
+
+
+/* TVASTRA: keep product cards the same height in the collection grid. */
+.shop-simple .product-box {
+  height: 100% !important;
+}
+
+.shop-simple .product-box > .box-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+.shop-simple .product-box > .box-inner > .product-image {
+  flex: 0 0 auto !important;
+}
+
+.shop-simple .product-box > .box-inner > .product-footer {
+  display: flex !important;
+  flex: 1 0 auto !important;
+  flex-direction: column !important;
+}
+
+.shop-simple .product-box .product-footer .product-title-wrapper {
+  flex: 1 0 auto !important;
+}
+
+.shop-simple .product-box .product-footer .product-title {
+  display: -webkit-box !important;
+  min-height: 2.8em !important;
+  overflow: hidden !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  line-height: 1.4em !important;
+}
