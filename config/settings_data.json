@@ -20,6 +20,7 @@
     "container_max_width": 1680,
     "enable_box_layout": false,
     "header_layout": "style-1",
+    "enable_ajex_data": false,
     "header_style": "center-logo",
     "border_logo_navigation": false,
     "show_alt_font": true,
