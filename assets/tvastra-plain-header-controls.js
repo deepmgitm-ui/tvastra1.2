@@ -46,12 +46,25 @@
     var panel = document.getElementById('navbarNav');
     if (!panel) return;
 
-    panel.classList.toggle('show', open);
-    document.body.classList.toggle('navbar-collapse-show', open);
-    document.body.classList.toggle('navbar-open', open);
-
     if (!open) {
+      /* Close through Bootstrap when available, then force the final state so
+         the header X always closes the drawer even if the theme is mid-toggle. */
+      try {
+        if (window.bootstrap && window.bootstrap.Collapse) {
+          var collapse = window.bootstrap.Collapse.getOrCreateInstance(panel, { toggle: false });
+          collapse.hide();
+        }
+      } catch (error) {
+        /* Class cleanup below is the fallback. */
+      }
+
+      panel.classList.remove('show', 'collapsing');
+      panel.style.height = '';
+      document.body.classList.remove('navbar-collapse-show', 'navbar-open');
       clearOpenSubmenus(panel);
+    } else {
+      panel.classList.add('show');
+      document.body.classList.add('navbar-collapse-show', 'navbar-open');
     }
 
     document.querySelectorAll('.navbar-toggler.toggle-mobile').forEach(function (button) {
@@ -241,6 +254,15 @@
           }
         }
       }
+      return;
+    }
+
+    var headerClose = target.closest('#navbarNav .navbar-collapse-header .menu-close');
+    if (headerClose && isMobileNav()) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      setMenu(false);
       return;
     }
 
