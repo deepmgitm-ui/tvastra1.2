@@ -4748,3 +4748,34 @@ cart-notification.active {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+
+/* TVASTRA: desktop navigation parity.
+   Keeps the mobile menu behavior unchanged while giving desktop users the
+   same visible parent-arrow control and click-to-open dropdown behavior. */
+@media (min-width: 1200px) {
+  .navbar .navbar-nav .nav-item > .nav-link .nav-parent-arrow {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    position: static;
+    width: auto;
+    height: auto;
+    margin-left: 6px;
+    font-size: 13px;
+    line-height: 1;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+
+  .navbar .navbar-nav .nav-item.tvastra-desktop-open > .megamenu,
+  .navbar .navbar-nav .nav-item.tvastra-desktop-open > .simple-dropdown {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .navbar .navbar-nav .nav-item.tvastra-desktop-open > .nav-link .nav-parent-arrow {
+    transform: rotate(90deg);
+  }
+}
