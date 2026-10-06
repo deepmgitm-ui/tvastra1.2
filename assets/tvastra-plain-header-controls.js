@@ -78,7 +78,7 @@
       if (!target || !target.closest) return;
 
       var mobileTab = target.closest('.product-tabs .mobile-tab-title');
-      if (mobileTab && window.matchMedia('(max-width: 767.98px)').matches) {
+      if (mobileTab) {
         var pane = mobileTab.parentElement;
         var content = mobileTab.nextElementSibling;
 
@@ -117,7 +117,7 @@
         return;
       }
 
-      var sizeGuide = target.closest('.product-information .modal-popup[href^="#size-guide-popup-"], .main-product-page .modal-popup[href^="#size-guide-popup-"]');
+      var sizeGuide = target.closest('.modal-popup[href^="#size-guide-popup-"]');
       if (sizeGuide) {
         event.preventDefault();
         event.stopPropagation();
