@@ -447,4 +447,7 @@
     setSearch(false);
     closeDesktopSubmenus();
   });
+  initMobileFooterToggle();
+  initProductInfoInteractions();
+
 })();
