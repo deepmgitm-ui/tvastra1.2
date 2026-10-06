@@ -72,6 +72,98 @@
     });
   }
 
+  function initProductInfoInteractions() {
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      if (!target || !target.closest) return;
+
+      var mobileTab = target.closest('.product-tabs .mobile-tab-title');
+      if (mobileTab && window.matchMedia('(max-width: 767.98px)').matches) {
+        var pane = mobileTab.parentElement;
+        var content = mobileTab.nextElementSibling;
+
+        if (!pane || !content || !pane.classList.contains('tab-pane')) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        var wasOpen = mobileTab.classList.contains('active') && pane.classList.contains('show');
+
+        document.querySelectorAll('.product-tabs .tab-pane').forEach(function (otherPane) {
+          otherPane.classList.remove('show', 'active');
+          var otherTitle = otherPane.querySelector(':scope > .mobile-tab-title');
+          var otherContent = otherTitle && otherTitle.nextElementSibling;
+          if (otherTitle) otherTitle.classList.remove('active');
+          if (otherContent) otherContent.style.display = 'none';
+        });
+
+        document.querySelectorAll('.product-tabs .nav-tabs .nav-link').forEach(function (link) {
+          link.classList.remove('active');
+          link.setAttribute('aria-selected', 'false');
+        });
+
+        if (!wasOpen) {
+          mobileTab.classList.add('active');
+          pane.classList.add('show', 'active');
+          content.style.display = 'block';
+
+          var desktopLink = document.querySelector('.product-tabs .nav-tabs .nav-link[data-bs-target="#' + pane.id + '"]');
+          if (desktopLink) {
+            desktopLink.classList.add('active');
+            desktopLink.setAttribute('aria-selected', 'true');
+          }
+        }
+        return;
+      }
+
+      var sizeGuide = target.closest('.product-information .modal-popup[href^="#size-guide-popup-"], .main-product-page .modal-popup[href^="#size-guide-popup-"]');
+      if (sizeGuide) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        var selector = sizeGuide.getAttribute('href');
+        var popup = selector && document.querySelector(selector);
+
+        if (!popup) return;
+
+        if (window.jQuery && jQuery.magnificPopup) {
+          jQuery.magnificPopup.open({
+            items: { src: selector },
+            type: 'inline',
+            preloader: false,
+            closeBtnInside: true,
+            callbacks: {
+              open: function () { document.body.classList.add('overflow-hidden'); },
+              close: function () { document.body.classList.remove('overflow-hidden'); }
+            }
+          });
+        } else {
+          popup.classList.remove('mfp-hide');
+          popup.setAttribute('data-tvastra-size-guide-open', 'true');
+        }
+        return;
+      }
+    }, true);
+
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      if (!target || !target.closest) return;
+
+      var popup = target.closest('[data-tvastra-size-guide-open]');
+      if (!popup) return;
+
+      var close = target.closest('.mfp-close, [data-size-guide-close]');
+      if (close) {
+        event.preventDefault();
+        popup.classList.add('mfp-hide');
+        popup.removeAttribute('data-tvastra-size-guide-open');
+        document.body.classList.remove('overflow-hidden');
+      }
+    }, false);
+  }
+
   function initMobileFooterToggle() {
     /* Footer accordion is delegated so it also works after Shopify section
        reloads. Only intercept the footer headings on small screens. */
